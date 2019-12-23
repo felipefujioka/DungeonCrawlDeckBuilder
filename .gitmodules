@@ -1,0 +1,5 @@
+
+[submodule "Assets/NaughtyAttributes"]
+	path = Assets/NaughtyAttributes
+	url = https://github.com/dbrizov/NaughtyAttributes.git
+
