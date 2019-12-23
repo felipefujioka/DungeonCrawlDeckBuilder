@@ -1,18 +1,23 @@
 ﻿using System.Collections;
 using DG.Tweening;
+using Game.Event;
+using Game.General;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.UIElements;
+using EventSystem = Game.General.EventSystem;
 
-public class Draggable : MonoBehaviour, 
+public class DraggableCard : MonoBehaviour, 
+    IBeginDragHandler,
     IDragHandler, 
     IEndDragHandler, 
     IPointerEnterHandler, 
     IPointerExitHandler, 
     IPointerDownHandler
 {
+    public CardView CardView;
     public Transform Target;
     private bool dragging;
+    private Vector3 startingPosition;
     
     public void OnDrag(PointerEventData eventData)
     {
@@ -23,6 +28,14 @@ public class Draggable : MonoBehaviour,
     public void OnEndDrag(PointerEventData eventData)
     {
         dragging = false;
+
+        if (Mathf.Abs(startingPosition.y - transform.position.y) > 500)
+        {
+            EventSystem.Instance.Raise(new TryUseCardEvent()
+            {
+                CardView = CardView
+            });
+        }
     }
     
 
@@ -54,5 +67,10 @@ public class Draggable : MonoBehaviour,
     public void OnPointerDown(PointerEventData eventData)
     {
         transform.DOScale(1, 0.2f).Play();
+    }
+
+    public void OnBeginDrag(PointerEventData eventData)
+    {
+        startingPosition = transform.position;
     }
 }

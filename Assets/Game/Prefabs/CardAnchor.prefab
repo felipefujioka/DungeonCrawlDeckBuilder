@@ -705,6 +705,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aa68a67e872a24c08bd79a6024528b2e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  CardView: {fileID: 5216483531334911690}
   Target: {fileID: 5662579932050185428}
 --- !u!1 &5662579932050185431
 GameObject:

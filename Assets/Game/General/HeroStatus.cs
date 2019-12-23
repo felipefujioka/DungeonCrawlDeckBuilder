@@ -23,11 +23,21 @@ namespace Game.General
         private int currentHP;
         private int maxMana;
         private int currentMana;
+
+        private int drawsPerTurn;
+        
         private List<CardConfig> cardsInDeck;
 
         private HeroStatus()
         {
             cardsInDeck = new List<CardConfig>();
+            SetMaxMana(3);
+            RestoreMana();
+            
+            SetMaxHP(80);
+            FullHeal();
+            
+            SetDrawsPerTurn(2);
         }
         
         public int MaxHp => maxHP;
@@ -38,8 +48,15 @@ namespace Game.General
 
         public int CurrentMana => currentMana;
 
+        public int DrawsPerTurn => drawsPerTurn;
+
         public List<CardConfig> CardsInDeck => cardsInDeck;
 
+        public void SetDrawsPerTurn(int value)
+        {
+            drawsPerTurn = value;
+        }
+        
         public void SetMaxHP(int value)
         {
             maxHP = value;
@@ -64,11 +81,21 @@ namespace Game.General
             currentHP = CurrentHp > MaxHp ? MaxHp : CurrentHp;
         }
 
+        public void FullHeal()
+        {
+            currentHP = MaxHp;
+        }
+
         public void RecoverMana(int value)
         {
             currentMana += value;
 
             currentMana = CurrentMana > MaxMana ? MaxMana : CurrentMana;
+        }
+        
+        public void RestoreMana()
+        {
+            currentMana = MaxMana;
         }
 
         public void SpendMana(int value)

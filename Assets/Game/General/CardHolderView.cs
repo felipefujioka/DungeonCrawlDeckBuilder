@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Game.Event;
 using UnityEngine;
 
 namespace Game.General
@@ -18,10 +19,22 @@ namespace Game.General
         {
             cardsInHand = new Dictionary<int, CardView>();
             orderedCards = new List<int>();
+            
+            EventSystem.Instance.AddListener<UsedCardEvent>(OnUseCardHandler);
+        }
+
+        private void OnUseCardHandler(UsedCardEvent e)
+        {
+            RemoveCardInHand(e.CardView);
         }
 
         public void AddCardInHand(CardConfig config)
         {
+            if (config == null)
+            {
+                return;
+            }
+            
             var cardViewInstance = Instantiate(CardViewPrefab, HandHolder);
             
             cardViewInstance.Init(config);

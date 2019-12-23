@@ -9,11 +9,11 @@ namespace Game.General
         public TextMeshProUGUI Description;
         public TextMeshProUGUI Cost;
 
-        private CardConfig config;
+        public CardConfig Config;
         
         public void Init(CardConfig config)
         {
-            this.config = config;
+            Config = config;
 
             Title.text = config.Title;
             Description.text = config.Description;

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Game.Event;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -17,6 +18,16 @@ namespace Game.General
         public DeckController(List<CardConfig> deckCards)
         {
             deck = new List<CardConfig>(deckCards);
+            discardPile = new List<CardConfig>();
+            hand = new List<CardConfig>();
+            
+            EventSystem.Instance.AddListener<UsedCardEvent>(OnUseCardEvent);
+        }
+
+        private void OnUseCardEvent(UsedCardEvent e)
+        {
+            RemoveCardFromHand(e.CardView.Config);
+            DiscardCard(e.CardView.Config);
         }
 
         private void ShuffleDeck()
@@ -45,15 +56,22 @@ namespace Game.General
 
         public CardConfig DrawCard()
         {
-            if (deck.Count == 0)
+            if (deck.Count == 0 && discardPile.Count > 0)
             {
                 deck = new List<CardConfig>(discardPile);
                 discardPile = new List<CardConfig>();
                 ShuffleDeck();
             }
+
+            if (deck.Count == 0)
+            {
+                return null;
+            }
             
             var card = deck[0];
             deck.RemoveAt(0);
+            
+            hand.Add(card);
 
             return card;
         }
