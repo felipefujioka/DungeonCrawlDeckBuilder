@@ -31,9 +31,21 @@ public class DraggableCard : MonoBehaviour,
 
         if (Mathf.Abs(startingPosition.y - transform.position.y) > 500)
         {
+            var xDeltaPos = transform.position.x - (Screen.width / 2f);
+            var pos = Position.LEFT;
+            if (xDeltaPos > - Screen.width / 6f && xDeltaPos < Screen.width / 6f)
+            {
+                pos = Position.MIDDLE;
+            } 
+            else if (xDeltaPos > Screen.width / 6f)
+            {
+                pos = Position.RIGHT;
+            }
+            
             EventSystem.Instance.Raise(new TryUseCardEvent()
             {
-                CardView = CardView
+                CardView = CardView,
+                Position = pos
             });
         }
     }

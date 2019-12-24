@@ -5,5 +5,6 @@ namespace Game.Event
     public class UsedCardEvent : General.Event
     {
         public CardView CardView;
+        public Position Position;
     }
 }

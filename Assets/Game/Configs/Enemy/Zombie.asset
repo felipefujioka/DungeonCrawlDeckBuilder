@@ -9,11 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 41cc74120a1746ada5d3342e1ecc39bc, type: 3}
-  m_Name: Slash
+  m_Script: {fileID: 11500000, guid: 9724503a4e6f42188f9249642a079cfc, type: 3}
+  m_Name: Zombie
   m_EditorClassIdentifier: 
-  Actions:
-  - {fileID: 11400000, guid: b227ebdfa299a4d54a221416814698f8, type: 2}
-  Title: Slash
-  Description: Deals 10 damage to <b>one</b> target enemy.
-  ManaCost: 1
+  Name: Zombie
+  Sprite: {fileID: 21300000, guid: f7cd6d5fd118047c993bbd3926d95b24, type: 3}
+  MaxHP: 60

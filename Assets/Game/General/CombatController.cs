@@ -6,13 +6,20 @@ using UnityEngine;
 
 public class CombatController : MonoBehaviour
 {
+    public EncounterConfig Encounter;
 
     public CardHolderView CardHolder;
+    public EncounterView EncounterView;
     
     private DeckController deckController;
+    private EncounterController encounterController;
+
+    private bool resolvingCard = false;
     
     void Start()
     {
+        encounterController = new EncounterController(EncounterView, Encounter);
+        
         var deck = Resources.Load<DeckConfig>("InitialDeck");
 
         foreach (var card in deck.Cards)
@@ -47,14 +54,37 @@ public class CombatController : MonoBehaviour
 
     private void OnTryUseCard(TryUseCardEvent tryUseCardEvent)
     {
-        if (tryUseCardEvent.CardView.Config.ManaCost <= HeroStatus.Instance.CurrentMana)
+        if (!resolvingCard && tryUseCardEvent.CardView.Config.ManaCost <= HeroStatus.Instance.CurrentMana)
         {
             EventSystem.Instance.Raise(new UsedCardEvent()
             {
-                CardView = tryUseCardEvent.CardView
+                CardView = tryUseCardEvent.CardView,
+                Position = tryUseCardEvent.Position
             });
+            
+            StartCoroutine(UseCard(tryUseCardEvent.CardView.Config, tryUseCardEvent.Position));
             
             HeroStatus.Instance.SpendMana(tryUseCardEvent.CardView.Config.ManaCost);
         }
-    } 
+    }
+
+    private IEnumerator UseCard(CardConfig card, Position position)
+    {
+        resolvingCard = true;
+        
+        foreach (var action in card.Actions)
+        {
+            yield return UseAction(action, position);
+        }
+
+        resolvingCard = false;
+    }
+
+    private IEnumerator UseAction(ActionConfig action, Position position)
+    {
+        if (action.Type == ActionType.ATTACK)
+        {
+            yield return encounterController.DealDamage(action.Magnitude, (int) position);
+        }
+    }
 }
