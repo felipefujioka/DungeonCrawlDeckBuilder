@@ -45,6 +45,11 @@ namespace Game.General
             enemiesPositions.Remove(e.Position);
 
             controller.Die();
+
+            if (enemies.Count == 0)
+            {
+                EventSystem.Instance.Raise(new RoomFinishedEvent());
+            }
         }
 
         public IEnumerator DealDamage(int damage, int position)

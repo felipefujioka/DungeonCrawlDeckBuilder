@@ -2,10 +2,13 @@
 using System.Collections.Generic;
 using Game.Event;
 using Game.General;
+using Game.General.Character;
 using UnityEngine;
 
 public class CombatController : MonoBehaviour
 {
+    public GameObject FinishRoomPopup;
+    
     public EncounterConfig Encounter;
 
     public CardHolderView CardHolder;
@@ -15,6 +18,9 @@ public class CombatController : MonoBehaviour
     private EncounterController encounterController;
 
     private bool resolvingCard = false;
+
+    private List<IHeroTurnPhase> heroTurnPhases;
+    private HeroCharacter hero;
     
     void Start()
     {
@@ -29,62 +35,34 @@ public class CombatController : MonoBehaviour
         
         deckController = new DeckController(HeroStatus.Instance.CardsInDeck);
         
-        for (int i = 0; i < 5; i++)
-        {
-            CardHolder.AddCardInHand(deckController.DrawCard());
-        }
+        EventSystem.Instance.AddListener<RoomFinishedEvent>(OnFinishRoom);
         
-        EventSystem.Instance.AddListener<TryUseCardEvent>(OnTryUseCard);
-        EventSystem.Instance.AddListener<EndTurnEvent>(OnEndTurn);
-    }
-
-    public void EndTurn()
-    {
-        EventSystem.Instance.Raise(new EndTurnEvent());
-    }
-
-    private void OnEndTurn(EndTurnEvent e)
-    {
-        HeroStatus.Instance.RestoreMana();
-        for (int i = 0; i < HeroStatus.Instance.DrawsPerTurn; i++)
+        heroTurnPhases = new List<IHeroTurnPhase>
         {
-            CardHolder.AddCardInHand(deckController.DrawCard());
-        }
+            new HeroDrawPhase(),
+            new HeroUpkeepPhase(),
+            new HeroPlayPhase(encounterController),
+            new HeroDiscardPhase()
+        };
+
+        StartCoroutine(RunCombat());
     }
 
-    private void OnTryUseCard(TryUseCardEvent tryUseCardEvent)
+    private IEnumerator RunCombat()
     {
-        if (!resolvingCard && tryUseCardEvent.CardView.Config.ManaCost <= HeroStatus.Instance.CurrentMana)
+        while (true)
         {
-            EventSystem.Instance.Raise(new UsedCardEvent()
+            foreach (var heroTurnPhase in heroTurnPhases)
             {
-                CardView = tryUseCardEvent.CardView,
-                Position = tryUseCardEvent.Position
-            });
-            
-            StartCoroutine(UseCard(tryUseCardEvent.CardView.Config, tryUseCardEvent.Position));
-            
-            HeroStatus.Instance.SpendMana(tryUseCardEvent.CardView.Config.ManaCost);
+                yield return heroTurnPhase.BeginPhase(hero, deckController, CardHolder);
+                yield return heroTurnPhase.WaitEndTurnCondition(hero);
+                yield return heroTurnPhase.EndPhase(hero, deckController, CardHolder);
+            }
         }
     }
 
-    private IEnumerator UseCard(CardConfig card, Position position)
+    private void OnFinishRoom(RoomFinishedEvent e)
     {
-        resolvingCard = true;
-        
-        foreach (var action in card.Actions)
-        {
-            yield return UseAction(action, position);
-        }
-
-        resolvingCard = false;
-    }
-
-    private IEnumerator UseAction(ActionConfig action, Position position)
-    {
-        if (action.Type == ActionType.ATTACK)
-        {
-            yield return encounterController.DealDamage(action.Magnitude, (int) position);
-        }
+        FinishRoomPopup.SetActive(true);   
     }
 }

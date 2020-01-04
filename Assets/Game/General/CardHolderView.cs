@@ -1,4 +1,6 @@
+using System.Collections;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 using Game.Event;
 using UnityEngine;
 
@@ -23,16 +25,46 @@ namespace Game.General
             EventSystem.Instance.AddListener<UsedCardEvent>(OnUseCardHandler);
         }
 
+        private void OnDestroy()
+        {
+            EventSystem.Instance.RemoveListener<UsedCardEvent>(OnUseCardHandler);
+        }
+
         private void OnUseCardHandler(UsedCardEvent e)
         {
             RemoveCardInHand(e.CardView);
         }
 
-        public void AddCardInHand(CardConfig config)
+        public Dictionary<int, CardView> GetCardsInHand()
+        {
+            return cardsInHand;
+        }
+        
+        public IEnumerator DiscardCard(CardConfig cardConfig)
+        {
+            CardView card = null;
+
+            foreach (var cardInHand in cardsInHand)
+            {
+                if (cardInHand.Value.Config == cardConfig)
+                {
+                    card = cardInHand.Value;
+                    break;
+                }
+            }
+            
+            RemoveCardInHand(card);
+
+            yield return null;
+            
+            ArrangeCards();
+        }
+
+        public IEnumerator AddCardInHand(CardConfig config)
         {
             if (config == null)
             {
-                return;
+                yield break;
             }
             
             var cardViewInstance = Instantiate(CardViewPrefab, HandHolder);
@@ -44,6 +76,8 @@ namespace Game.General
             orderedCards.Add(cardViewInstance.GetHashCode());
             
             ArrangeCards();
+
+            yield return null;
         }
 
         public void RemoveCardInHand(CardView card)

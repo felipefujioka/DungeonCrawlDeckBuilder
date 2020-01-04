@@ -42,6 +42,11 @@ namespace Game.General
             }
         }
 
+        public List<CardConfig> GetHand()
+        {
+            return hand;
+        }
+        
         public void RemoveCardFromHand(CardConfig card)
         {
             var indexToRemove = hand.IndexOf(card);
