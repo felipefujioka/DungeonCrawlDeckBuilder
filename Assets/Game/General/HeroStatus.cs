@@ -37,7 +37,7 @@ namespace Game.General
             SetMaxHP(80);
             FullHeal();
             
-            SetDrawsPerTurn(2);
+            SetDrawsPerTurn(5);
         }
         
         public int MaxHp => maxHP;

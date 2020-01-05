@@ -67,4 +67,9 @@ public class CombatController : MonoBehaviour
     {
         FinishRoomPopup.SetActive(true);   
     }
+
+    public void SendOnFinishTurnEvent()
+    {
+        EventSystem.Instance.Raise(new EndTurnEvent());
+    }
 }

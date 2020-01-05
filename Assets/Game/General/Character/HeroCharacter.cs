@@ -5,6 +5,11 @@ namespace Game.General.Character
 {
     public class HeroCharacter : BaseCharacter
     {
+        public override void UpkeepReset()
+        {
+            HeroStatus.Instance.RecoverMana(HeroStatus.Instance.MaxMana);
+        }
+
         public override void SufferDamage(int damage)
         {
             HeroStatus.Instance.TakeDamage(damage);

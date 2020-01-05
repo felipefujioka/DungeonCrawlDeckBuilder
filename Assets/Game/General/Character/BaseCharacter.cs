@@ -7,6 +7,8 @@ namespace Game.General.Character
     {
         private readonly Dictionary<int, ICondition> conditions = new Dictionary<int, ICondition>();
 
+        public abstract void UpkeepReset();
+
         public abstract void SufferDamage(int damage);
 
         public void SufferCondition(ICondition condition)
