@@ -5,7 +5,7 @@ namespace Game.General.Character
 {
     public abstract class BaseCharacter : ICharacter
     {
-        private Dictionary<int, ICondition> conditions;
+        private readonly Dictionary<int, ICondition> conditions = new Dictionary<int, ICondition>();
 
         public abstract void SufferDamage(int damage);
 

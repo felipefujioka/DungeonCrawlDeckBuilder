@@ -13,7 +13,7 @@ namespace Game.General
 
         private List<RectTransform> Slots;
 
-        private void Start()
+        private void Awake()
         {
             Slots = new List<RectTransform> {LeftSlot, MiddleSlot, RightSlot};
         }

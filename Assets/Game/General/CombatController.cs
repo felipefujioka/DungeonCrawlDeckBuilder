@@ -44,6 +44,8 @@ public class CombatController : MonoBehaviour
             new HeroPlayPhase(encounterController),
             new HeroDiscardPhase()
         };
+        
+        hero = new HeroCharacter();
 
         StartCoroutine(RunCombat());
     }

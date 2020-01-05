@@ -17,7 +17,7 @@ namespace Game.General
 
         private List<int> orderedCards;
 
-        private void Start()
+        private void Awake()
         {
             cardsInHand = new Dictionary<int, CardView>();
             orderedCards = new List<int>();
