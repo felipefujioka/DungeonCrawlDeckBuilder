@@ -56,6 +56,7 @@ namespace Game.General
         
         public void DiscardCard(CardConfig card)
         {
+            hand.Remove(card);
             discardPile.Add(card);
         }
 

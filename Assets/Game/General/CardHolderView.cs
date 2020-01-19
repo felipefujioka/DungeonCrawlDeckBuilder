@@ -94,14 +94,14 @@ namespace Game.General
         {
             var cardCount = orderedCards.Count;
             var cardSize = 300;
-            var initialPos = Screen.width /2f - cardSize * (cardCount - 1) / 2f;
+            var initialPos = - cardSize * (cardCount - 1) / 2f;
 
             for (int i = 0; i < cardCount; i++)
             {
                 var code = orderedCards[i];
                 var view = cardsInHand[code];
                 
-                view.transform.position = new Vector3(
+                view.transform.localPosition = new Vector3(
                         initialPos + i * cardSize,
                         0,
                         view.transform.position.z

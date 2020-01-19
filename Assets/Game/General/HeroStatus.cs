@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Dynamic;
+using DefaultNamespace;
 
 namespace Game.General
 {
@@ -65,6 +66,8 @@ namespace Game.General
         public void SetMaxMana(int value)
         {
             maxMana = value;
+            
+            NotifyManaDataChanged();
         }
 
         public void TakeDamage(int damage)
@@ -91,11 +94,15 @@ namespace Game.General
             currentMana += value;
 
             currentMana = CurrentMana > MaxMana ? MaxMana : CurrentMana;
+            
+            NotifyManaDataChanged();
         }
         
         public void RestoreMana()
         {
             currentMana = MaxMana;
+            
+            NotifyManaDataChanged();
         }
 
         public void SpendMana(int value)
@@ -103,11 +110,22 @@ namespace Game.General
             currentMana -= value;
 
             currentMana = CurrentMana < 0 ? 0 : CurrentMana;
+            
+            NotifyManaDataChanged();
         }
 
         public void AddCardToDeck(CardConfig card)
         {
             cardsInDeck.Add(card);
+        }
+
+        private void NotifyManaDataChanged()
+        {
+            EventSystem.Instance.Raise(new OnManaDataChangeEvent()
+            {
+                newMaxManaValue = MaxMana,
+                newCurrentManaValue = CurrentMana
+            });
         }
     }
 }
