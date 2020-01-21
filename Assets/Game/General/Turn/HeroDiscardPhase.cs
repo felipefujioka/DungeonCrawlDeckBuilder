@@ -8,9 +8,12 @@ namespace Game.General
     {
         public IEnumerator BeginPhase(HeroCharacter character, DeckController deckController, CardHolderView cardHolderView)
         {
-            foreach (var cardInHand in deckController.GetHand())
+            var cardsCount = deckController.GetHand().Count;
+            for (int i = cardsCount - 1; i >= 0; i--)
             {
+                var cardInHand = deckController.GetHand()[i];
                 deckController.DiscardCard(cardInHand);
+                deckController.RemoveCardFromHand(cardInHand);
                 CoroutineManager.Instance.StartCoroutine(cardHolderView.DiscardCard(cardInHand));
             }
 

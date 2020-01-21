@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Game.Event;
 using Game.General;
 using Game.General.Character;
@@ -32,8 +33,10 @@ public class CombatController : MonoBehaviour
         {
             HeroStatus.Instance.AddCardToDeck(card);
         }
+
+        var copyDeck = HeroStatus.Instance.CardsInDeck.Select(Instantiate).ToList();
         
-        deckController = new DeckController(HeroStatus.Instance.CardsInDeck);
+        deckController = new DeckController(copyDeck);
         
         EventSystem.Instance.AddListener<RoomFinishedEvent>(OnFinishRoom);
         

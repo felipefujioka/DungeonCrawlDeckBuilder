@@ -11,6 +11,8 @@ namespace Game.General
             {
                 yield return condition.Value.OnUpkeepBeginning(character);
             }
+            
+            HeroStatus.Instance.RestoreMana();
         }
 
         public IEnumerator WaitEndTurnCondition(ICharacter character)

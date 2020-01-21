@@ -51,12 +51,11 @@ namespace Game.General
         {
             var indexToRemove = hand.IndexOf(card);
             
-            hand.RemoveAt(indexToRemove);
+             hand.RemoveAt(indexToRemove);
         }
         
         public void DiscardCard(CardConfig card)
         {
-            hand.Remove(card);
             discardPile.Add(card);
         }
 
