@@ -8,7 +8,7 @@ using UnityEngine;
 
 public class CombatController : MonoBehaviour
 {
-    public GameObject FinishRoomPopup;
+    public RoomClearedView FinishRoomPopup;
     
     public EncounterConfig Encounter;
 
@@ -68,7 +68,7 @@ public class CombatController : MonoBehaviour
 
     private void OnFinishRoom(RoomFinishedEvent e)
     {
-        FinishRoomPopup.SetActive(true);   
+        FinishRoomPopup.gameObject.SetActive(true);   
     }
 
     public void SendOnFinishTurnEvent()

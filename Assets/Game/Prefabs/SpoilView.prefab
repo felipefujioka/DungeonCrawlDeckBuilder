@@ -52,6 +52,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4e880f5224e946f89eaa8e1f21913fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  SelectView: {fileID: 8251496774977795703}
   CardView: {fileID: 7180239318612862987}
 --- !u!114 &8970522333632795622
 MonoBehaviour:
@@ -92,7 +93,7 @@ MonoBehaviour:
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
   m_Interactable: 1
-  m_TargetGraphic: {fileID: 0}
+  m_TargetGraphic: {fileID: 829445496620180366}
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
@@ -132,6 +133,21 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &8251496774977795703
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7301601420153786425}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e19747de3f5aca642ab2be37e372fb86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_EffectColor: {r: 0, g: 0.9811321, b: 0.9438628, a: 0.5}
+  m_EffectDistance: {x: 10, y: -20}
+  m_UseGraphicAlpha: 1
 --- !u!1001 &3153075800284262081
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -259,7 +275,8 @@ PrefabInstance:
       propertyPath: m_Name
       value: CardAnchor
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 5662579931915484870, guid: 39cea35749be442c5874a6fd22e3ba48, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 39cea35749be442c5874a6fd22e3ba48, type: 3}
 --- !u!224 &7301601419751698965 stripped
 RectTransform:
@@ -279,3 +296,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 819e4cb4bea949c499240593736e857d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &7301601420153786425 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5662579931915484920, guid: 39cea35749be442c5874a6fd22e3ba48,
+    type: 3}
+  m_PrefabInstance: {fileID: 3153075800284262081}
+  m_PrefabAsset: {fileID: 0}
