@@ -1,12 +1,13 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Game.Event;
-using UnityEngine;
 using UnityEngine.EventSystems;
+using Random = UnityEngine.Random;
 
 namespace Game.General
 {
-    public class DeckController
+    public class DeckController : IDisposable
     {
 
         private List<CardConfig> deck;
@@ -21,10 +22,10 @@ namespace Game.General
             discardPile = new List<CardConfig>();
             hand = new List<CardConfig>();
             
-            EventSystem.Instance.AddListener<UsedCardEvent>(OnUseCardEvent);
+            EventSystem.Instance.AddListener<UsedCardDdbEvent>(OnUseCardEvent);
         }
 
-        private void OnUseCardEvent(UsedCardEvent e)
+        private void OnUseCardEvent(UsedCardDdbEvent e)
         {
             RemoveCardFromHand(e.CardView.Config);
             DiscardCard(e.CardView.Config);
@@ -79,6 +80,11 @@ namespace Game.General
             hand.Add(card);
 
             return card;
+        }
+
+        public void Dispose()
+        {
+            EventSystem.Instance.RemoveListener<UsedCardDdbEvent>(OnUseCardEvent);
         }
     }
 }

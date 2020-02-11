@@ -41,7 +41,7 @@ namespace Game.General
 
             if (currentHP <= 0)
             {
-                EventSystem.Instance.Raise(new EnemyDiedEvent()
+                EventSystem.Instance.Raise(new EnemyDiedDdbEvent()
                 {
                     Ticket = GetTicket(),
                     Position = position

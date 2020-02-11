@@ -14,16 +14,16 @@ public class QuestController : MonoBehaviour
     {
         StartCoroutine(RunQuest());
         
-        EventSystem.Instance.AddListener<ChoseQuestNodeEvent>(OnChoseQuestNode);
-        EventSystem.Instance.AddListener<RoomFinishedEvent>(OnRoomCleared);
+        EventSystem.Instance.AddListener<ChoseQuestNodeDdbEvent>(OnChoseQuestNode);
+        EventSystem.Instance.AddListener<SpoilsGottenDdbEvent>(OnRoomCleared);
     }
 
-    private void OnRoomCleared(RoomFinishedEvent e)
+    private void OnRoomCleared(SpoilsGottenDdbEvent e)
     {
         onQuest = false;
     }
 
-    private void OnChoseQuestNode(ChoseQuestNodeEvent e)
+    private void OnChoseQuestNode(ChoseQuestNodeDdbEvent e)
     {
         onQuest = true;
     }

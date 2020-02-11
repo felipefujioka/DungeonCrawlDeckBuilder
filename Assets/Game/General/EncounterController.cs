@@ -34,10 +34,10 @@ namespace Game.General
                 ticketCount++;
             }
             
-            EventSystem.Instance.AddListener<EnemyDiedEvent>(OnEnemyDied);
+            EventSystem.Instance.AddListener<EnemyDiedDdbEvent>(OnEnemyDied);
         }
 
-        private void OnEnemyDied(EnemyDiedEvent e)
+        private void OnEnemyDied(EnemyDiedDdbEvent e)
         {
             var controller = enemies[e.Ticket];
             
@@ -48,7 +48,7 @@ namespace Game.General
 
             if (enemies.Count == 0)
             {
-                EventSystem.Instance.Raise(new RoomFinishedEvent());
+                EventSystem.Instance.Raise(new RoomFinishedDdbEvent());
             }
         }
 

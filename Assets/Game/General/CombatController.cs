@@ -38,7 +38,7 @@ public class CombatController : MonoBehaviour
         
         deckController = new DeckController(copyDeck);
         
-        EventSystem.Instance.AddListener<RoomFinishedEvent>(OnFinishRoom);
+        EventSystem.Instance.AddListener<RoomFinishedDdbEvent>(OnFinishRoom);
         
         heroTurnPhases = new List<IHeroTurnPhase>
         {
@@ -66,13 +66,18 @@ public class CombatController : MonoBehaviour
         }
     }
 
-    private void OnFinishRoom(RoomFinishedEvent e)
+    private void OnFinishRoom(RoomFinishedDdbEvent e)
     {
         FinishRoomPopup.gameObject.SetActive(true);   
     }
 
     public void SendOnFinishTurnEvent()
     {
-        EventSystem.Instance.Raise(new EndTurnEvent());
+        EventSystem.Instance.Raise(new EndTurnDdbEvent());
+    }
+
+    private void OnDestroy()
+    {
+        deckController.Dispose();
     }
 }

@@ -121,7 +121,7 @@ namespace Game.General
 
         private void NotifyManaDataChanged()
         {
-            EventSystem.Instance.Raise(new OnManaDataChangeEvent()
+            EventSystem.Instance.Raise(new OnManaDataChangeDdbEvent()
             {
                 newMaxManaValue = MaxMana,
                 newCurrentManaValue = CurrentMana

@@ -1,6 +1,6 @@
 namespace Game.General
 {
-    public class Event
+    public class DDBEvent
     {
         
     }

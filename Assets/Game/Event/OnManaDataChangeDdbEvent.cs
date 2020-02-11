@@ -2,7 +2,7 @@ using Game.General;
 
 namespace DefaultNamespace
 {
-    public class OnManaDataChangeEvent : Event
+    public class OnManaDataChangeDdbEvent : DDBEvent
     {
         public int newCurrentManaValue;
         public int newMaxManaValue;

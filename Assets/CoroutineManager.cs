@@ -18,7 +18,8 @@ public class CoroutineManager : MonoBehaviour
         }
         else
         {
-            throw new Exception("Another coroutine manager already instantiated");
+            Destroy(gameObject);
+            return;
         }
         
         DontDestroyOnLoad(gameObject);

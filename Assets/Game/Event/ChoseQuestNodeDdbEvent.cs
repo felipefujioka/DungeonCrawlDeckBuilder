@@ -1,6 +1,6 @@
 namespace Game.Event
 {
-    public class ChoseQuestNodeEvent : General.Event
+    public class ChoseQuestNodeDdbEvent : General.DDBEvent
     {
         public QuestNode Node;
     }

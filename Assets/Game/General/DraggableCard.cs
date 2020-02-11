@@ -55,7 +55,7 @@ public class DraggableCard : MonoBehaviour,
                 pos = Position.RIGHT;
             }
             
-            EventSystem.Instance.Raise(new TryUseCardEvent()
+            EventSystem.Instance.Raise(new TryUseCardDdbEvent()
             {
                 CardView = CardView,
                 Position = pos

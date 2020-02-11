@@ -18,23 +18,23 @@ namespace Game.General
         {
             this.encounterController = encounterController;
             
-            EventSystem.Instance.AddListener<EndTurnEvent>(OnEndTurn);
-            EventSystem.Instance.AddListener<TryUseCardEvent>(OnTryUseCard);
+            EventSystem.Instance.AddListener<EndTurnDdbEvent>(OnEndTurn);
+            EventSystem.Instance.AddListener<TryUseCardDdbEvent>(OnTryUseCard);
         }
         
-        private void OnTryUseCard(TryUseCardEvent tryUseCardEvent)
+        private void OnTryUseCard(TryUseCardDdbEvent tryUseCardDdbEvent)
         {
-            if (!resolvingCard && tryUseCardEvent.CardView.Config.ManaCost <= HeroStatus.Instance.CurrentMana)
+            if (!resolvingCard && tryUseCardDdbEvent.CardView.Config.ManaCost <= HeroStatus.Instance.CurrentMana)
             {
-                EventSystem.Instance.Raise(new UsedCardEvent()
+                EventSystem.Instance.Raise(new UsedCardDdbEvent()
                 {
-                    CardView = tryUseCardEvent.CardView,
-                    Position = tryUseCardEvent.Position
+                    CardView = tryUseCardDdbEvent.CardView,
+                    Position = tryUseCardDdbEvent.Position
                 });
             
-                CoroutineManager.Instance.StartCoroutine(UseCard(tryUseCardEvent.CardView.Config, tryUseCardEvent.Position));
+                CoroutineManager.Instance.StartCoroutine(UseCard(tryUseCardDdbEvent.CardView.Config, tryUseCardDdbEvent.Position));
             
-                HeroStatus.Instance.SpendMana(tryUseCardEvent.CardView.Config.ManaCost);
+                HeroStatus.Instance.SpendMana(tryUseCardDdbEvent.CardView.Config.ManaCost);
             }
         }
         
@@ -58,7 +58,7 @@ namespace Game.General
             }
         }
 
-        private void OnEndTurn(EndTurnEvent e)
+        private void OnEndTurn(EndTurnDdbEvent e)
         {
             endPhase = true;
         }   
@@ -82,8 +82,8 @@ namespace Game.General
 
         public void OnDestroy()
         {
-            EventSystem.Instance.RemoveListener<EndTurnEvent>(OnEndTurn);
-            EventSystem.Instance.RemoveListener<TryUseCardEvent>(OnTryUseCard);
+            EventSystem.Instance.RemoveListener<EndTurnDdbEvent>(OnEndTurn);
+            EventSystem.Instance.RemoveListener<TryUseCardDdbEvent>(OnTryUseCard);
         }
     }
 }

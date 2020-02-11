@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using Game.Event;
 using Game.General;
 using UnityEngine;
 using UnityEngine.Events;
@@ -44,6 +45,19 @@ public class RoomClearedView : MonoBehaviour
             ResetSpoilViews();
             spoil.Select(true);
         };
+    }
+
+    public void OnChoseSpoil()
+    {
+        if (selectedCard != null)
+        {
+            EventSystem.Instance.Raise(new SpoilsGottenDdbEvent()
+            {
+                card = selectedCard
+            });
+            
+            HeroStatus.Instance.AddCardToDeck(selectedCard);
+        }
     }
 
     private void ResetSpoilViews()

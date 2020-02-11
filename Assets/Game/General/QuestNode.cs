@@ -25,7 +25,7 @@ public class QuestNode : MonoBehaviour
 
     private void OnQuestButtonPressed()
     {
-        EventSystem.Instance.Raise(new ChoseQuestNodeEvent()
+        EventSystem.Instance.Raise(new ChoseQuestNodeDdbEvent()
         {
             Node = this
         });

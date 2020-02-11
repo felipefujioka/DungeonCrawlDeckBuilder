@@ -22,15 +22,15 @@ namespace Game.General
             cardsInHand = new Dictionary<int, CardView>();
             orderedCards = new List<int>();
             
-            EventSystem.Instance.AddListener<UsedCardEvent>(OnUseCardHandler);
+            EventSystem.Instance.AddListener<UsedCardDdbEvent>(OnUseCardHandler);
         }
 
         private void OnDestroy()
         {
-            EventSystem.Instance.RemoveListener<UsedCardEvent>(OnUseCardHandler);
+            EventSystem.Instance.RemoveListener<UsedCardDdbEvent>(OnUseCardHandler);
         }
 
-        private void OnUseCardHandler(UsedCardEvent e)
+        private void OnUseCardHandler(UsedCardDdbEvent e)
         {
             RemoveCardInHand(e.CardView);
         }

@@ -1,6 +1,6 @@
 namespace Game.Event
 {
-    public class EnemyDiedEvent : General.Event
+    public class EnemyDiedDdbEvent : General.DDBEvent
     {
         public int Ticket;
         public int Position;

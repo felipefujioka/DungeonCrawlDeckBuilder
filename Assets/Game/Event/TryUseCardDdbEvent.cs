@@ -9,7 +9,7 @@ namespace Game.Event
         RIGHT = 2
     }
 
-    public class TryUseCardEvent : General.Event
+    public class TryUseCardDdbEvent : General.DDBEvent
     {
         public CardView CardView;
         public Position Position;

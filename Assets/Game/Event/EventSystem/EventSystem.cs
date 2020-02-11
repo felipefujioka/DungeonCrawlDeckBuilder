@@ -16,8 +16,8 @@ namespace Game.General
         }
         private static EventSystem instance = null;
 
-        public delegate void EventDelegate<T>(T e) where T : Event;
-        private delegate void EventDelegate(Event e);
+        public delegate void EventDelegate<T>(T e) where T : DDBEvent;
+        private delegate void EventDelegate(DDBEvent e);
 
         /// <summary>
         /// The actual delegate, there is one delegate per unique event. Each
@@ -33,7 +33,7 @@ namespace Game.General
         /// <summary>
         /// Add the delegate.
         /// </summary>
-        public void AddListener<T>(EventDelegate<T> del) where T : Event {
+        public void AddListener<T>(EventDelegate<T> del) where T : DDBEvent {
 
             if (delegateLookup.ContainsKey(del)) {
                 return;
@@ -56,7 +56,7 @@ namespace Game.General
         /// <summary>
         /// Remove the delegate. Can be called multiple times on same delegate.
         /// </summary>
-        public void RemoveListener<T>(EventDelegate<T> del) where T : Event {
+        public void RemoveListener<T>(EventDelegate<T> del) where T : DDBEvent {
 
             EventDelegate internalDelegate;
             if (delegateLookup.TryGetValue(del, out internalDelegate)) {
@@ -84,7 +84,7 @@ namespace Game.General
         /// <summary>
         /// Raise the event to all the listeners
         /// </summary>
-        public void Raise(Event e) {
+        public void Raise(DDBEvent e) {
             EventDelegate del;
             if (delegates.TryGetValue(e.GetType(), out del)) {
                 del.Invoke(e);
