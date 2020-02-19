@@ -79,5 +79,8 @@ public class CombatController : MonoBehaviour
     private void OnDestroy()
     {
         deckController.Dispose();
+        encounterController.Dispose();
+        
+        EventSystem.Instance.RemoveListener<RoomFinishedDdbEvent>(OnFinishRoom);
     }
 }

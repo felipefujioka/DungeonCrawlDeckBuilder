@@ -1,10 +1,11 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Game.Event;
 
 namespace Game.General
 {
-    public class EncounterController
+    public class EncounterController : IDisposable
     {
         private EncounterView view;
 
@@ -80,6 +81,11 @@ namespace Game.General
 
                 yield return DealDamage(damage, position);
             }
+        }
+
+        public void Dispose()
+        {
+            EventSystem.Instance.RemoveListener<EnemyDiedDdbEvent>(OnEnemyDied);
         }
     }
 }

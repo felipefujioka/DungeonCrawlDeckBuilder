@@ -18,6 +18,12 @@ public class QuestController : MonoBehaviour
         EventSystem.Instance.AddListener<SpoilsGottenDdbEvent>(OnRoomCleared);
     }
 
+    private void OnDestroy()
+    {
+        EventSystem.Instance.RemoveListener<ChoseQuestNodeDdbEvent>(OnChoseQuestNode);
+        EventSystem.Instance.RemoveListener<SpoilsGottenDdbEvent>(OnRoomCleared);
+    }
+
     private void OnRoomCleared(SpoilsGottenDdbEvent e)
     {
         onQuest = false;

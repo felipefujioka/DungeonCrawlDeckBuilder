@@ -15,6 +15,11 @@ public class ManaIndicatorView : MonoBehaviour
         EventSystem.Instance.AddListener<OnManaDataChangeDdbEvent>(OnManaDataChangeHandler);       
     }
 
+    private void OnDestroy()
+    {
+        EventSystem.Instance.RemoveListener<OnManaDataChangeDdbEvent>(OnManaDataChangeHandler);
+    }
+
     private void OnManaDataChangeHandler(OnManaDataChangeDdbEvent e)
     {
         ManaLabel.text = $"{e.newCurrentManaValue}/{e.newMaxManaValue}";
