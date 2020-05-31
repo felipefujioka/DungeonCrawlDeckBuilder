@@ -4,6 +4,7 @@ using System.Linq;
 using Game.Event;
 using Game.General;
 using Game.General.Character;
+using Game.General.Turn.Enemy;
 using UnityEngine;
 
 public class CombatController : MonoBehaviour
@@ -22,6 +23,8 @@ public class CombatController : MonoBehaviour
 
     private List<IHeroTurnPhase> heroTurnPhases;
     private HeroCharacter hero;
+
+    private List<IEnemyTurnPhase> enemyTurnPhases;
     
     void Start()
     {
@@ -48,6 +51,13 @@ public class CombatController : MonoBehaviour
             new HeroDiscardPhase()
         };
         
+        enemyTurnPhases = new List<IEnemyTurnPhase>()
+        {
+            new EnemyUpkeepPhase(),
+            new EnemyActionPhase(),
+            new EnemyFinishTurnPhase()
+        };
+        
         hero = new HeroCharacter();
 
         StartCoroutine(RunCombat());
@@ -62,6 +72,15 @@ public class CombatController : MonoBehaviour
                 yield return heroTurnPhase.BeginPhase(hero, deckController, CardHolder);
                 yield return heroTurnPhase.WaitEndTurnCondition(hero);
                 yield return heroTurnPhase.EndPhase(hero, deckController, CardHolder);
+            }
+
+            foreach (var enemy in encounterController.GetEnemies())
+            {
+                foreach (var enemyPhase in enemyTurnPhases)
+                {
+                    yield return enemyPhase.BeginPhase(enemy, hero, deckController, CardHolder);
+                    yield return enemyPhase.EndPhase(enemy, hero, deckController, CardHolder);
+                }
             }
         }
     }
