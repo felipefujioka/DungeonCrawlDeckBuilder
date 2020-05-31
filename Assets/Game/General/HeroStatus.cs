@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using System.Dynamic;
 using DefaultNamespace;
+using Game.Event;
+using TMPro;
 
 namespace Game.General
 {
@@ -75,6 +77,8 @@ namespace Game.General
             currentHP -= damage;
 
             currentHP = CurrentHp < 0 ? 0 : CurrentHp;
+            
+            NotifyLifeChanged(currentHP, maxHP, false, damage);
         }
 
         public void Heal(int value)
@@ -82,11 +86,17 @@ namespace Game.General
             currentHP += value;
 
             currentHP = CurrentHp > MaxHp ? MaxHp : CurrentHp;
+            
+            NotifyLifeChanged(currentHP, maxHP, true, value);
         }
 
         public void FullHeal()
         {
+            var value = maxHP - currentHP;
+            
             currentHP = MaxHp;
+            
+            NotifyLifeChanged(currentHP, maxHP, true, value);
         }
 
         public void RecoverMana(int value)
@@ -125,6 +135,17 @@ namespace Game.General
             {
                 newMaxManaValue = MaxMana,
                 newCurrentManaValue = CurrentMana
+            });
+        }
+
+        private void NotifyLifeChanged(int currentLife, int maxLife, bool heal, int changed)
+        {
+            EventSystem.Instance.Raise(new OnLifeDataChanged()
+            {
+                CurrentLife = currentLife,
+                MaxLife = maxLife,
+                Heal = heal,
+                ChangedValue = changed
             });
         }
     }
