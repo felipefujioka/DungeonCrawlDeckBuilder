@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using Game.General.Condition;
 
@@ -6,9 +7,9 @@ namespace Game.General.Character
     public interface ICharacter
     {
         void UpkeepReset();
-        void SufferDamage(int damage);
+        IEnumerator SufferDamage(int damage);
         
-        void SufferCondition(ICondition condition);
+        IEnumerator SufferCondition(ICondition condition);
 
         bool ShouldDraw();
 

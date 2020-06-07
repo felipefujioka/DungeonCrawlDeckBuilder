@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using Game.General.Condition;
 
@@ -9,9 +10,9 @@ namespace Game.General.Character
 
         public abstract void UpkeepReset();
 
-        public abstract void SufferDamage(int damage);
+        public abstract IEnumerator SufferDamage(int damage);
 
-        public void SufferCondition(ICondition condition)
+        public IEnumerator SufferCondition(ICondition condition)
         {
             if (conditions.ContainsKey(condition.GetConditionId()))
             {
@@ -21,6 +22,9 @@ namespace Game.General.Character
             {
                 conditions.Add(condition.GetConditionId(), condition);
             }
+
+            // TODO: add condition animation
+            yield return null;
         }
 
         public abstract bool ShouldDraw();

@@ -1,7 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Game.Event;
+using Game.General.Character;
 
 namespace Game.General
 {
@@ -38,6 +40,20 @@ namespace Game.General
             EventSystem.Instance.AddListener<EnemyDiedDdbEvent>(OnEnemyDied);
         }
 
+        public List<EnemyController> GetEnemies()
+        {
+            var ticketsInOrder = enemiesPositions.OrderBy(pair => pair.Key).Select(pair => pair.Value);
+            
+            var list = new List<EnemyController>();
+
+            foreach (var ticket in ticketsInOrder)
+            {
+                list.Add(enemies[ticket]);
+            }
+
+            return list;
+        }
+
         private void OnEnemyDied(EnemyDiedDdbEvent e)
         {
             var controller = enemies[e.Ticket];
@@ -53,7 +69,7 @@ namespace Game.General
             }
         }
 
-        public IEnumerator DealDamage(int damage, int position)
+        public IEnumerator HeroDealDamage(int damage, int position)
         {
             var ticket = 0;
             if (enemiesPositions.ContainsKey(position))
@@ -62,7 +78,7 @@ namespace Game.General
                 
                 var controller = enemies[ticket];
 
-                yield return controller.TakeDamage(damage);
+                yield return controller.SufferDamage(damage);
             }
             else
             {
@@ -79,7 +95,7 @@ namespace Game.General
                     position = 2;
                 }
 
-                yield return DealDamage(damage, position);
+                yield return HeroDealDamage(damage, position);
             }
         }
 
