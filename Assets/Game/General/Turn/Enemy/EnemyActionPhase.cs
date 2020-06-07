@@ -8,7 +8,14 @@ namespace Game.General.Turn.Enemy
         public IEnumerator BeginPhase(IEnemyController character, HeroCharacter hero, DeckController deckController,
             CardHolderView cardHolderView)
         {
-            yield return null;
+            var action = character.GetCurrentAction();
+
+            yield return character.AnimateAction();
+            
+            if (action.Type == ActionType.ATTACK)
+            {
+               yield return hero.SufferDamage(action.Magnitude);
+            }
         }
 
         public IEnumerator EndPhase(IEnemyController character, HeroCharacter hero, DeckController deckController,

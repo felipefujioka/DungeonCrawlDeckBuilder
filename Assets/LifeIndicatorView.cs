@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using System.Runtime.InteropServices.WindowsRuntime;
 using DG.Tweening;
 using Game.Event;
@@ -14,15 +15,26 @@ namespace DefaultNamespace
         public TextMeshProUGUI MaxLifeLabel;
 
         public TextMeshProUGUI IncreaseLifeLabel;
-        public TextMeshProUGUI DecreaseLifeLabel;
+        public List<TextMeshProUGUI> DecreaseLifeLabels;
+
+        private int labelsCount;
+        private int labelIndex;
         
         private void Start()
         {
             EventSystem.Instance.AddListener<OnLifeDataChanged>(OnLifeChanged);
+            labelsCount = DecreaseLifeLabels.Count;
+        }
+
+        private void OnDestroy()
+        {
+            EventSystem.Instance.RemoveListener<OnLifeDataChanged>(OnLifeChanged);
         }
 
         private void OnLifeChanged(OnLifeDataChanged e)
         {
+            labelIndex = labelIndex < labelsCount - 1 ? labelIndex + 1 : 0;  
+            
             CoroutineManager.Instance.StartCoroutine(Animate(e));
 
         }
@@ -30,6 +42,8 @@ namespace DefaultNamespace
         private IEnumerator Animate(OnLifeDataChanged e)
         {
             MaxLifeLabel.text = e.MaxLife.ToString();
+            
+            CurrentLifeLabel.text = e.CurrentLife.ToString();
 
             if (e.Heal)
             {
@@ -37,10 +51,8 @@ namespace DefaultNamespace
             }
             else
             {
-                yield return AnimateChange(DecreaseLifeLabel, e.ChangedValue);
+                yield return AnimateChange(DecreaseLifeLabels[labelIndex], e.ChangedValue);
             }
-
-            CurrentLifeLabel.text = e.CurrentLife.ToString();
         }
 
         private IEnumerator AnimateChange(TextMeshProUGUI label, int eChangedValue)
@@ -48,13 +60,22 @@ namespace DefaultNamespace
             var finished = false;
             label.gameObject.SetActive(true);
             label.transform.position = CurrentLifeLabel.transform.position;
+            label.alpha = 1f;
 
-            var tween = label.transform.DOJump(
-                label.transform.position + new Vector3(50, 200, 0),
-                200,
+            var tween = label.transform.DOLocalJump(
+                new Vector3(50, 0, 0),
+                140,
                 1,
                 0.7f
-            ).Play();
+            );
+
+            var fadeTween = label.DOFade(0, 0.3f);
+
+            var seq = DOTween.Sequence();
+            seq.Append(tween);
+            seq.Insert(0.4f, fadeTween);
+
+            seq.Play();
 
             label.text = eChangedValue.ToString();
 

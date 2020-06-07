@@ -8,7 +8,7 @@ namespace Game.General
 {
     public class EnemyController : BaseCharacter, IEnemyController
     {
-        private ActionConfig currentConfig;
+        private ActionConfig currentAction;
         
         private int ticket;
         private int position;
@@ -35,6 +35,8 @@ namespace Game.General
             enemyView.Init(config);
             maxHP = config.MaxHP;
             currentHP = maxHP;
+            
+            ChangeCurrentAction();
         }
 
         public void Die()
@@ -74,12 +76,17 @@ namespace Game.General
 
         public ActionConfig GetCurrentAction()
         {
-            return currentConfig;
+            return currentAction;
         }
 
         public void ChangeCurrentAction()
         {
-            currentConfig = config.Actions[Random.Range(0, config.Actions.Count)];
+            currentAction = config.Actions[Random.Range(0, config.Actions.Count)];
+        }
+
+        public IEnumerator AnimateAction()
+        {
+            yield return enemyView.Act();
         }
     }
 }

@@ -30,7 +30,6 @@ namespace Game.General
 
         public void OnDestroy()
         {
-            throw new System.NotImplementedException();
         }
     }
 }

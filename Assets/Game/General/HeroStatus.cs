@@ -79,6 +79,11 @@ namespace Game.General
             currentHP = CurrentHp < 0 ? 0 : CurrentHp;
             
             NotifyLifeChanged(currentHP, maxHP, false, damage);
+
+            if (currentHP == 0)
+            {
+                EventSystem.Instance.Raise(new OnHeroDiedDdbEvent()); 
+            }
         }
 
         public void Heal(int value)
@@ -147,6 +152,11 @@ namespace Game.General
                 Heal = heal,
                 ChangedValue = changed
             });
+        }
+
+        public void Reset()
+        {
+            instance = null;
         }
     }
 }

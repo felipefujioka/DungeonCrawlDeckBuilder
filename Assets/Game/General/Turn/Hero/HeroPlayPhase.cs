@@ -54,7 +54,7 @@ namespace Game.General
         {
             if (action.Type == ActionType.ATTACK)
             {
-                yield return encounterController.DealDamage(action.Magnitude, (int) position);
+                yield return encounterController.HeroDealDamage(action.Magnitude, (int) position);
             }
         }
 

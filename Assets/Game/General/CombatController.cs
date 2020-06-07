@@ -6,10 +6,12 @@ using Game.General;
 using Game.General.Character;
 using Game.General.Turn.Enemy;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class CombatController : MonoBehaviour
 {
     public RoomClearedView FinishRoomPopup;
+    public GameObject GameOverScreen;
     
     public EncounterConfig Encounter;
 
@@ -42,6 +44,7 @@ public class CombatController : MonoBehaviour
         deckController = new DeckController(copyDeck);
         
         EventSystem.Instance.AddListener<RoomFinishedDdbEvent>(OnFinishRoom);
+        EventSystem.Instance.AddListener<OnHeroDiedDdbEvent>(OnHeroDied);
         
         heroTurnPhases = new List<IHeroTurnPhase>
         {
@@ -61,6 +64,11 @@ public class CombatController : MonoBehaviour
         hero = new HeroCharacter();
 
         StartCoroutine(RunCombat());
+    }
+
+    private void OnHeroDied(OnHeroDiedDdbEvent e)
+    {
+        GameOverScreen.SetActive(true);
     }
 
     private IEnumerator RunCombat()
@@ -95,11 +103,23 @@ public class CombatController : MonoBehaviour
         EventSystem.Instance.Raise(new EndTurnDdbEvent());
     }
 
+    public void ResetGame()
+    {
+        HeroStatus.Instance.Reset();
+        SceneManager.LoadScene("QuestScene");
+    }
+
     private void OnDestroy()
     {
         deckController.Dispose();
         encounterController.Dispose();
         
         EventSystem.Instance.RemoveListener<RoomFinishedDdbEvent>(OnFinishRoom);
+        EventSystem.Instance.RemoveListener<OnHeroDiedDdbEvent>(OnHeroDied);
+
+        foreach (var phase in heroTurnPhases)
+        {
+            phase.OnDestroy();
+        }
     }
 }

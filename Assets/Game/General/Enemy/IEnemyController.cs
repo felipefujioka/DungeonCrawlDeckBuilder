@@ -6,5 +6,7 @@ namespace Game.General
     {
         ActionConfig GetCurrentAction();
         void ChangeCurrentAction();
+
+        IEnumerator AnimateAction();
     }
 }

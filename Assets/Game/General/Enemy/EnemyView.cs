@@ -1,5 +1,6 @@
 using System.Collections;
 using DG.Tweening;
+using Game.Event;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -12,6 +13,8 @@ namespace Game.General
         public TextMeshProUGUI LifeLabel;
         public TextMeshProUGUI NameLabel;
         public Image EnemyImage;
+        public Animator Animator;
+        private static readonly int Act1 = Animator.StringToHash("Act");
 
         public void Init(EnemyConfig config)
         {
@@ -19,6 +22,28 @@ namespace Game.General
             LifeLabel.text = config.MaxHP + " / " + config.MaxHP;
             NameLabel.text = config.Name;
         }
+
+        public IEnumerator Act()
+        {
+            var finished = false;
+            
+            if (Animator != null)
+            {
+                Animator.SetTrigger(Act1);
+            }
+
+            var moveTween = EnemyImage.transform.DOLocalJump(Vector3.zero, 30, 1, 0.5f).Play().OnComplete(() =>
+            {
+                finished = true;
+            });
+            
+            yield return new WaitUntil(() => finished);
+            
+            if (Animator != null)
+            {
+                yield return new WaitUntil(() => Animator.GetCurrentAnimatorStateInfo(0).IsName("Act"));
+            }
+        } 
         
         public IEnumerator TakeDamage(int damage, int currentLife, int maxLife)
         {

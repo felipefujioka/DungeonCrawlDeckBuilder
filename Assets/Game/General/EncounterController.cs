@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Game.Event;
+using Game.General.Character;
 
 namespace Game.General
 {
@@ -68,7 +69,7 @@ namespace Game.General
             }
         }
 
-        public IEnumerator DealDamage(int damage, int position)
+        public IEnumerator HeroDealDamage(int damage, int position)
         {
             var ticket = 0;
             if (enemiesPositions.ContainsKey(position))
@@ -94,7 +95,7 @@ namespace Game.General
                     position = 2;
                 }
 
-                yield return DealDamage(damage, position);
+                yield return HeroDealDamage(damage, position);
             }
         }
 
