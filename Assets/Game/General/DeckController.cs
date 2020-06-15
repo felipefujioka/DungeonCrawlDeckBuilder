@@ -22,6 +22,8 @@ namespace Game.General
             discardPile = new List<CardConfig>();
             hand = new List<CardConfig>();
             
+            ShuffleDeck();
+            
             EventSystem.Instance.AddListener<UsedCardDdbEvent>(OnUseCardEvent);
         }
 
