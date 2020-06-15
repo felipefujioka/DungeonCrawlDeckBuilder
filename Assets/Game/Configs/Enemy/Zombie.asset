@@ -17,3 +17,5 @@ MonoBehaviour:
   MaxHP: 60
   Actions:
   - {fileID: 11400000, guid: b227ebdfa299a4d54a221416814698f8, type: 2}
+  - {fileID: 11400000, guid: bb0379cb299004652a4aebc33fc3d625, type: 2}
+  - {fileID: 11400000, guid: 709a4031ca7be400fb6e332c8e859ba2, type: 2}

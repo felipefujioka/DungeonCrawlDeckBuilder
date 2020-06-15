@@ -35,5 +35,8 @@ namespace Game.General.Character
         {
             return conditions;
         }
+
+        public abstract IEnumerator GainBlock(int actionMagnitude);
+        public abstract IEnumerator ResetBlock();
     }
 }

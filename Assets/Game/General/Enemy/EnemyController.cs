@@ -15,7 +15,9 @@ namespace Game.General
         
         private int maxHP;
         private int currentHP;
-        
+
+        private int block;
+
         private EnemyView enemyView;
         private EnemyConfig config;
 
@@ -50,6 +52,14 @@ namespace Game.General
 
         public override IEnumerator SufferDamage(int damage)
         {
+            if (block > 0)
+            {
+                var blockedDamage = block > damage ? damage : block;
+                block -= blockedDamage;
+                damage -= blockedDamage;
+                enemyView.ChangeBlock(block);
+            }
+            
             yield return enemyView.TakeDamage(damage, currentHP, maxHP);
 
             currentHP -= damage;
@@ -74,6 +84,18 @@ namespace Game.General
             return 0;
         }
 
+        public override IEnumerator GainBlock(int actionMagnitude)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override IEnumerator ResetBlock()
+        {
+            block = 0;
+
+            yield return null;
+        }
+
         public ActionConfig GetCurrentAction()
         {
             return currentAction;
@@ -82,6 +104,7 @@ namespace Game.General
         public void ChangeCurrentAction()
         {
             currentAction = config.Actions[Random.Range(0, config.Actions.Count)];
+            enemyView.StartCoroutine(enemyView.ShowIntent(currentAction));
         }
 
         public IEnumerator AnimateAction()

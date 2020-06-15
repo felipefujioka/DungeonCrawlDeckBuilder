@@ -21,6 +21,8 @@ namespace Game.General.Turn.Enemy
         public IEnumerator EndPhase(IEnemyController character, HeroCharacter hero, DeckController deckController,
             CardHolderView cardHolderView)
         {
+            character.ChangeCurrentAction();
+            
             yield return null;
         }
     }

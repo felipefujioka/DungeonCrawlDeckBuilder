@@ -16,5 +16,8 @@ namespace Game.General.Character
         int AmountToDraw();
 
         Dictionary<int, ICondition> GetConditions();
+        IEnumerator GainBlock(int actionMagnitude);
+
+        IEnumerator ResetBlock();
     }
 }

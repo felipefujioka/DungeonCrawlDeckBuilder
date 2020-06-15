@@ -9,13 +9,16 @@ namespace Game.General
     {
 
         private EncounterController encounterController;
+
+        private ICharacter hero;
         
         private bool endPhase;
         
         private bool resolvingCard = false;
 
-        public HeroPlayPhase(EncounterController encounterController)
+        public HeroPlayPhase(EncounterController encounterController, ICharacter hero)
         {
+            this.hero = hero;
             this.encounterController = encounterController;
             
             EventSystem.Instance.AddListener<EndTurnDdbEvent>(OnEndTurn);
@@ -52,9 +55,17 @@ namespace Game.General
         
         private IEnumerator UseAction(ActionConfig action, Position position)
         {
-            if (action.Type == ActionType.ATTACK)
+            switch (action.Type)
             {
-                yield return encounterController.HeroDealDamage(action.Magnitude, (int) position);
+                case ActionType.ATTACK:
+                    yield return encounterController.HeroDealDamage(action.Magnitude, (int) position);
+                    break;
+                case ActionType.DEFENSE:
+                    yield return hero.GainBlock(action.Magnitude);
+                    break;
+                default:
+                    yield return null;
+                    break;
             }
         }
 

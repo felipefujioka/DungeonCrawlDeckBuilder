@@ -1,8 +1,10 @@
 using System.Collections;
+using System.Collections.Generic;
 using DG.Tweening;
 using Game.Event;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace Game.General
@@ -12,6 +14,18 @@ namespace Game.General
         public RectTransform LifeBarFill;
         public TextMeshProUGUI LifeLabel;
         public TextMeshProUGUI NameLabel;
+
+        public Sprite AttackActionIcon;
+        public Sprite DefenseActionIcon;
+        public Sprite MagicActionIcon;
+        public Sprite UnknownActionIcon;
+        
+        public Image IntentionIcon;
+        public TextMeshProUGUI IntentLabel;
+
+        public GameObject BlockGroup;
+        public TextMeshProUGUI BlockLabel;
+        
         public Image EnemyImage;
         public Animator Animator;
         private static readonly int Act1 = Animator.StringToHash("Act");
@@ -72,6 +86,33 @@ namespace Game.General
             yield return new WaitUntil(() => finished);
             
             Destroy(gameObject);
+        }
+
+        public IEnumerator ChangeBlock(int value)
+        {
+            if (value > 0)
+            {
+                BlockGroup.SetActive(false);
+            }
+            
+            BlockLabel.text = value.ToString();
+
+            yield return null;
+        }
+
+        public IEnumerator ShowIntent(ActionConfig action)
+        {
+            IntentLabel.text = "";
+            
+            switch (action.Type)
+            {
+                case ActionType.ATTACK:
+                    IntentionIcon.sprite = AttackActionIcon;
+                    IntentLabel.text = action.Magnitude.ToString();
+                    break;
+            }
+
+            yield return null;
         }
     }
 }

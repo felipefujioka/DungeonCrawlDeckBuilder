@@ -7,7 +7,7 @@ using TMPro;
 namespace Game.General
 {
     public class HeroStatus
-    {
+    { 
         private static HeroStatus instance;
 
         public static HeroStatus Instance {
@@ -26,6 +26,8 @@ namespace Game.General
         private int currentHP;
         private int maxMana;
         private int currentMana;
+
+        private int block;
 
         private int drawsPerTurn;
         
@@ -53,6 +55,8 @@ namespace Game.General
 
         public int DrawsPerTurn => drawsPerTurn;
 
+        public int Block => block;
+
         public List<CardConfig> CardsInDeck => cardsInDeck;
 
         public void SetDrawsPerTurn(int value)
@@ -72,8 +76,30 @@ namespace Game.General
             NotifyManaDataChanged();
         }
 
+        public void GainBlock(int block)
+        {
+            this.block += block;
+            
+            NotifyBlockChanged(0, this.block);
+        }
+
+        public void ResetBlock()
+        {
+            block = 0;
+            
+            NotifyBlockChanged(0, 0);
+        }
+
         public void TakeDamage(int damage)
         {
+            if (Block > 0)
+            {
+                var blockedDamage = block > damage ? damage : block;
+                block -= blockedDamage;
+                damage -= blockedDamage;
+                NotifyBlockChanged(blockedDamage, block);
+            }
+            
             currentHP -= damage;
 
             currentHP = CurrentHp < 0 ? 0 : CurrentHp;
@@ -151,6 +177,15 @@ namespace Game.General
                 MaxLife = maxLife,
                 Heal = heal,
                 ChangedValue = changed
+            });
+        }
+        
+        private void NotifyBlockChanged(int blocked, int block) 
+        {
+            EventSystem.Instance.Raise(new OnBlockDataChanged()
+            {
+                Blocked = blocked,
+                Block = block
             });
         }
 
