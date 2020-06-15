@@ -11,6 +11,6 @@ namespace Game.General
         public Sprite Sprite;
 
         public int MaxHP;
-        public List<Action> Actions;
+        public List<ActionConfig> Actions;
     }
 }
