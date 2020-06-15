@@ -28,5 +28,19 @@ namespace Game.General.Character
         {
             return HeroStatus.Instance.DrawsPerTurn;
         }
+
+        public override IEnumerator GainBlock(int actionMagnitude)
+        {
+            HeroStatus.Instance.GainBlock(actionMagnitude);
+
+            yield return null;
+        }
+
+        public override IEnumerator ResetBlock()
+        {
+            HeroStatus.Instance.ResetBlock();
+
+            yield return null;
+        }
     }
 }

@@ -46,11 +46,13 @@ public class CombatController : MonoBehaviour
         EventSystem.Instance.AddListener<RoomFinishedDdbEvent>(OnFinishRoom);
         EventSystem.Instance.AddListener<OnHeroDiedDdbEvent>(OnHeroDied);
         
+        hero = new HeroCharacter();
+        
         heroTurnPhases = new List<IHeroTurnPhase>
         {
             new HeroDrawPhase(),
             new HeroUpkeepPhase(),
-            new HeroPlayPhase(encounterController),
+            new HeroPlayPhase(encounterController, hero),
             new HeroDiscardPhase()
         };
         
@@ -60,8 +62,6 @@ public class CombatController : MonoBehaviour
             new EnemyActionPhase(),
             new EnemyFinishTurnPhase()
         };
-        
-        hero = new HeroCharacter();
 
         StartCoroutine(RunCombat());
     }

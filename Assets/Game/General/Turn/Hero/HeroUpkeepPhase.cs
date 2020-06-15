@@ -7,6 +7,8 @@ namespace Game.General
     {
         public IEnumerator BeginPhase(HeroCharacter character, DeckController deckController, CardHolderView cardHolderView)
         {
+            yield return character.ResetBlock();
+            
             foreach (var condition in character.GetConditions())
             {
                 yield return condition.Value.OnUpkeepBeginning(character);
