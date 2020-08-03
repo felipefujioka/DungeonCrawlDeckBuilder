@@ -69,7 +69,7 @@ namespace Game.General
             }
         }
 
-        public IEnumerator HeroDealDamage(int damage, int position)
+        private EnemyController GetEnemy(int position)
         {
             var ticket = 0;
             if (enemiesPositions.ContainsKey(position))
@@ -78,30 +78,38 @@ namespace Game.General
                 
                 var controller = enemies[ticket];
 
-                yield return controller.SufferDamage(damage);
+                return controller;
             }
-            else
-            {
-                if (position == 2)
-                {
-                    position = 1;
-                } 
-                else if (position == 1)
-                {
-                    position = 0;
-                }
-                else if(position == 0)
-                {
-                    position = 2;
-                }
 
-                yield return HeroDealDamage(damage, position);
+            if (position == 2)
+            {
+                position = 1;
+            } 
+            else if (position == 1)
+            {
+                position = 0;
             }
+            else if(position == 0)
+            {
+                position = 2;
+            }
+
+            return GetEnemy(position);
+        }
+        
+        public IEnumerator HeroDealDamage(int damage, int position)
+        {
+            yield return GetEnemy(position).SufferDamage(damage);
         }
 
         public void Dispose()
         {
             EventSystem.Instance.RemoveListener<EnemyDiedDdbEvent>(OnEnemyDied);
+        }
+
+        public IEnumerator CauseStatusOnEnemy(int actionMagnitude, EnemyStatusType status, int position)
+        {
+            yield return GetEnemy(position).AddStatus(actionMagnitude, status);
         }
     }
 }

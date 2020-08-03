@@ -8,5 +8,11 @@ namespace Game.General
         void ChangeCurrentAction();
 
         IEnumerator AnimateAction();
+
+        IEnumerator TakeDamage(int damage);
+
+        IEnumerator ActivateStatusesOnUpkeep();
+
+        IEnumerator ActivateStatusesOnEndPhase();
     }
 }

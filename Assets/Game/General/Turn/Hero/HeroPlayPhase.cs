@@ -60,6 +60,9 @@ namespace Game.General
                 case ActionType.ATTACK:
                     yield return encounterController.HeroDealDamage(action.Magnitude, (int) position);
                     break;
+                case ActionType.POISON:
+                    yield return encounterController.CauseStatusOnEnemy(action.Magnitude, EnemyStatusType.POISON, (int) position);
+                    break;
                 case ActionType.DEFENSE:
                     yield return hero.GainBlock(action.Magnitude);
                     break;

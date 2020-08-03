@@ -8,7 +8,7 @@ namespace Game.General.Turn.Enemy
         public IEnumerator BeginPhase(IEnemyController character, HeroCharacter hero, DeckController deckController,
             CardHolderView cardHolderView)
         {
-            yield return null;
+            yield return character.ActivateStatusesOnUpkeep();
         }
 
         public IEnumerator EndPhase(IEnemyController character, HeroCharacter hero, DeckController deckController,
