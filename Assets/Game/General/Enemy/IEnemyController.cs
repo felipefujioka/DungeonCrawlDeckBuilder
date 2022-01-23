@@ -6,7 +6,7 @@ namespace Game.General
     {
         ActionConfig GetCurrentAction();
         void ChangeCurrentAction();
-
+        bool IsAlive();
         IEnumerator AnimateAction();
 
         IEnumerator TakeDamage(int damage);

@@ -112,6 +112,11 @@ namespace Game.General
             enemyView.StartCoroutine(enemyView.ShowIntent(currentAction));
         }
 
+        public bool IsAlive()
+        {
+            return currentHP > 0;
+        }
+
         public IEnumerator AnimateAction()
         {
             yield return enemyView.Act();
