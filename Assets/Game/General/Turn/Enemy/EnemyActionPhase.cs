@@ -1,5 +1,6 @@
 using System.Collections;
 using Game.General.Character;
+using UnityEngine;
 
 namespace Game.General.Turn.Enemy
 {
@@ -14,7 +15,12 @@ namespace Game.General.Turn.Enemy
             
             if (action.Type == ActionType.ATTACK)
             {
-               yield return hero.SufferDamage(action.Magnitude);
+                float modifier = 1;
+                foreach (var status in character.GetStatuses())
+                {
+                    modifier *= status.DamageDealtModifier();
+                }
+                yield return hero.SufferDamage(Mathf.FloorToInt(action.Magnitude * modifier));
             }
         }
 

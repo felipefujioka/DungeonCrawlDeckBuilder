@@ -7,8 +7,8 @@ using TMPro;
 namespace Game.General
 {
     public class HeroStatus
-    { 
-        private static HeroStatus instance;
+    {
+        static HeroStatus instance;
 
         public static HeroStatus Instance {
             get
@@ -22,25 +22,25 @@ namespace Game.General
             }
         }
 
-        private int maxHP;
-        private int currentHP;
-        private int maxMana;
-        private int currentMana;
+        int maxHP;
+        int currentHP;
+        int maxMana;
+        int currentMana;
 
-        private int block;
+        int block;
 
-        private int drawsPerTurn;
-        
-        private List<CardConfig> cardsInDeck;
+        int drawsPerTurn;
 
-        private HeroStatus()
+        List<CardConfig> cardsInDeck;
+
+        HeroStatus()
         {
             cardsInDeck = new List<CardConfig>();
-            SetMaxMana(3);
-            RestoreMana();
+            SetMaxMana(3, false);
+            RestoreMana(false);
             
-            SetMaxHP(80);
-            FullHeal();
+            SetMaxHP(80, false);
+            FullHeal(false);
             
             SetDrawsPerTurn(5);
         }
@@ -64,16 +64,25 @@ namespace Game.General
             drawsPerTurn = value;
         }
         
-        public void SetMaxHP(int value)
+        public void SetMaxHP(int value, bool notify = true)
         {
             maxHP = value;
+
+            if (notify)
+            {
+                NotifyLifeChanged(CurrentHp, maxHP, false, 0);
+            }
         }
 
-        public void SetMaxMana(int value)
+        public void SetMaxMana(int value, bool notify = true)
         {
             maxMana = value;
+
+            if (notify)
+            {
+                NotifyManaDataChanged();
+            }
             
-            NotifyManaDataChanged();
         }
 
         public void GainBlock(int block)
@@ -121,13 +130,16 @@ namespace Game.General
             NotifyLifeChanged(currentHP, maxHP, true, value);
         }
 
-        public void FullHeal()
+        public void FullHeal(bool notify = true)
         {
             var value = maxHP - currentHP;
             
             currentHP = MaxHp;
-            
-            NotifyLifeChanged(currentHP, maxHP, true, value);
+
+            if (notify)
+            {
+                NotifyLifeChanged(currentHP, maxHP, true, value);    
+            }
         }
 
         public void RecoverMana(int value)
@@ -139,11 +151,14 @@ namespace Game.General
             NotifyManaDataChanged();
         }
         
-        public void RestoreMana()
+        public void RestoreMana(bool notify = true)
         {
             currentMana = MaxMana;
-            
-            NotifyManaDataChanged();
+
+            if (notify)
+            {
+                NotifyManaDataChanged();    
+            }
         }
 
         public void SpendMana(int value)
@@ -160,7 +175,7 @@ namespace Game.General
             cardsInDeck.Add(card);
         }
 
-        private void NotifyManaDataChanged()
+        void NotifyManaDataChanged()
         {
             EventSystem.Instance.Raise(new OnManaDataChangeDdbEvent()
             {
@@ -169,7 +184,7 @@ namespace Game.General
             });
         }
 
-        private void NotifyLifeChanged(int currentLife, int maxLife, bool heal, int changed)
+        void NotifyLifeChanged(int currentLife, int maxLife, bool heal, int changed)
         {
             EventSystem.Instance.Raise(new OnLifeDataChanged()
             {
@@ -179,8 +194,8 @@ namespace Game.General
                 ChangedValue = changed
             });
         }
-        
-        private void NotifyBlockChanged(int blocked, int block) 
+
+        void NotifyBlockChanged(int blocked, int block) 
         {
             EventSystem.Instance.Raise(new OnBlockDataChanged()
             {
@@ -192,6 +207,13 @@ namespace Game.General
         public void Reset()
         {
             instance = null;
+        }
+
+        public void GainMana(int actionMagnitude)
+        {
+            currentMana += actionMagnitude;
+            
+            NotifyManaDataChanged();
         }
     }
 }

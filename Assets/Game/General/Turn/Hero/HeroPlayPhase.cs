@@ -1,31 +1,38 @@
+using System;
 using System.Collections;
 using Game.Event;
 using Game.General.Character;
 using UnityEngine;
+using UnityEngine.UIElements;
+using Position = Game.Event.Position;
 
 namespace Game.General
 {
     public class HeroPlayPhase : IHeroTurnPhase
     {
+        EncounterController encounterController;
+        DeckController deckController;
+        CardHolderView cardHolderView;
 
-        private EncounterController encounterController;
+        ICharacter hero;
 
-        private ICharacter hero;
-        
-        private bool endPhase;
-        
-        private bool resolvingCard = false;
+        bool endPhase;
 
-        public HeroPlayPhase(EncounterController encounterController, ICharacter hero)
+        bool resolvingCard = false;
+        bool repeatNext = false;
+
+        public HeroPlayPhase(EncounterController encounterController, ICharacter hero, DeckController deckController, CardHolderView cardHolderView)
         {
             this.hero = hero;
             this.encounterController = encounterController;
+            this.deckController = deckController;
+            this.cardHolderView = cardHolderView;
             
             EventSystem.Instance.AddListener<EndTurnDdbEvent>(OnEndTurn);
             EventSystem.Instance.AddListener<TryUseCardDdbEvent>(OnTryUseCard);
         }
-        
-        private void OnTryUseCard(TryUseCardDdbEvent tryUseCardDdbEvent)
+
+        void OnTryUseCard(TryUseCardDdbEvent tryUseCardDdbEvent)
         {
             if (!resolvingCard && tryUseCardDdbEvent.CardView.Config.ManaCost <= HeroStatus.Instance.CurrentMana)
             {
@@ -40,20 +47,32 @@ namespace Game.General
                 HeroStatus.Instance.SpendMana(tryUseCardDdbEvent.CardView.Config.ManaCost);
             }
         }
-        
-        private IEnumerator UseCard(CardConfig card, Position position)
+
+        IEnumerator UseCard(CardConfig card, Position position)
         {
             resolvingCard = true;
+            repeatNext = false;
         
             foreach (var action in card.Actions)
             {
-                yield return UseAction(action, position);
+                if (repeatNext)
+                {
+                    foreach (var pos in Enum.GetValues(typeof(Position)))
+                    {
+                        yield return UseAction(action, (Position) pos);
+                    }
+                }
+                else
+                {
+                    yield return UseAction(action, position);    
+                }
+                
             }
 
             resolvingCard = false;
         }
-        
-        private IEnumerator UseAction(ActionConfig action, Position position)
+
+        IEnumerator UseAction(ActionConfig action, Position position)
         {
             switch (action.Type)
             {
@@ -63,8 +82,29 @@ namespace Game.General
                 case ActionType.POISON:
                     yield return encounterController.CauseStatusOnEnemy(action.Magnitude, EnemyStatusType.POISON, (int) position);
                     break;
+                case ActionType.VULNERABLE:
+                    yield return encounterController.CauseStatusOnEnemy(action.Magnitude, EnemyStatusType.VULNERABLE, (int) position);
+                    break;
+                case ActionType.WEAKENED:
+                    yield return encounterController.CauseStatusOnEnemy(action.Magnitude, EnemyStatusType.WEAKENED, (int) position);
+                    break;
                 case ActionType.DEFENSE:
                     yield return hero.GainBlock(action.Magnitude);
+                    break;
+                case ActionType.REPEAT:
+                    repeatNext = true;
+                    break;
+                case ActionType.HEAL:
+                    HeroStatus.Instance.Heal(action.Magnitude);
+                    break;
+                case ActionType.MANA:
+                    HeroStatus.Instance.GainMana(action.Magnitude);
+                    break;
+                case ActionType.DRAW:
+                    for (int i = 0; i < action.Magnitude; i++)
+                    {
+                        yield return cardHolderView.AddCardInHand(deckController.DrawCard());    
+                    }
                     break;
                 default:
                     yield return null;
@@ -72,7 +112,7 @@ namespace Game.General
             }
         }
 
-        private void OnEndTurn(EndTurnDdbEvent e)
+        void OnEndTurn(EndTurnDdbEvent e)
         {
             endPhase = true;
         }   

@@ -13,24 +13,33 @@ public class CombatController : MonoBehaviour
     public RoomClearedView FinishRoomPopup;
     public GameObject GameOverScreen;
     
-    public EncounterConfig Encounter;
+    public List<EncounterConfig> Encounters;
 
     public CardHolderView CardHolder;
     public EncounterView EncounterView;
     
-    private DeckController deckController;
-    private EncounterController encounterController;
+    DeckController deckController;
+    EncounterController encounterController;
 
-    private bool resolvingCard = false;
+    bool resolvingCard = false;
 
-    private List<IHeroTurnPhase> heroTurnPhases;
-    private HeroCharacter hero;
+    List<IHeroTurnPhase> heroTurnPhases;
+    HeroCharacter hero;
 
-    private List<IEnemyTurnPhase> enemyTurnPhases;
-    
+    List<IEnemyTurnPhase> enemyTurnPhases;
+
+    public static int Level = 0;
+
     void Start()
     {
-        encounterController = new EncounterController(EncounterView, Encounter);
+        EncounterConfig.Difficulty difficulty = Level < 4 ? 
+            EncounterConfig.Difficulty.EASY :
+            Level < 7 ? EncounterConfig.Difficulty.MEDIUM :
+            Level <= 9 ? EncounterConfig.Difficulty.HARD : EncounterConfig.Difficulty.BOSS;
+
+        List<EncounterConfig> candidates = Encounters.Where(encounter => encounter.EncounterDifficulty == difficulty).ToList();
+
+        encounterController = new EncounterController(EncounterView, candidates[Random.Range(0, candidates.Count)]);
         
         var deck = Resources.Load<DeckConfig>("InitialDeck");
 
@@ -52,7 +61,7 @@ public class CombatController : MonoBehaviour
         {
             new HeroDrawPhase(),
             new HeroUpkeepPhase(),
-            new HeroPlayPhase(encounterController, hero),
+            new HeroPlayPhase(encounterController, hero, deckController, CardHolder),
             new HeroDiscardPhase()
         };
         
@@ -66,12 +75,12 @@ public class CombatController : MonoBehaviour
         StartCoroutine(RunCombat());
     }
 
-    private void OnHeroDied(OnHeroDiedDdbEvent e)
+    void OnHeroDied(OnHeroDiedDdbEvent e)
     {
         GameOverScreen.SetActive(true);
     }
 
-    private IEnumerator RunCombat()
+    IEnumerator RunCombat()
     {
         while (true)
         {
@@ -86,14 +95,17 @@ public class CombatController : MonoBehaviour
             {
                 foreach (var enemyPhase in enemyTurnPhases)
                 {
-                    yield return enemyPhase.BeginPhase(enemy, hero, deckController, CardHolder);
-                    yield return enemyPhase.EndPhase(enemy, hero, deckController, CardHolder);
+                    if (enemy.IsAlive())
+                    {
+                        yield return enemyPhase.BeginPhase(enemy, hero, deckController, CardHolder);
+                        yield return enemyPhase.EndPhase(enemy, hero, deckController, CardHolder);    
+                    }
                 }
             }
         }
     }
 
-    private void OnFinishRoom(RoomFinishedDdbEvent e)
+    void OnFinishRoom(RoomFinishedDdbEvent e)
     {
         FinishRoomPopup.gameObject.SetActive(true);   
     }
@@ -109,7 +121,7 @@ public class CombatController : MonoBehaviour
         SceneManager.LoadScene("QuestScene");
     }
 
-    private void OnDestroy()
+    void OnDestroy()
     {
         deckController.Dispose();
         encounterController.Dispose();

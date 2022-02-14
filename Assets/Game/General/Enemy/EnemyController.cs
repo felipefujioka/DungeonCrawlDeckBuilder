@@ -1,28 +1,32 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Game.Event;
 using Game.General.Character;
+using UnityEngine;
 using Random = UnityEngine.Random;
 
 namespace Game.General
 {
     public class EnemyController : BaseCharacter, IEnemyController
     {
-        private ActionConfig currentAction;
-        
-        private int ticket;
-        private int position;
-        
-        private int maxHP;
-        private int currentHP;
+        ActionConfig currentAction;
 
-        private int block;
+        int ticket;
+        int position;
 
-        private EnemyView enemyView;
-        private EnemyConfig config;
+        int maxHP;
+        int currentHP;
 
-        private Dictionary<EnemyStatusType, EnemyStatus> statuses;
+        int block;
+
+        EnemyView enemyView;
+        EnemyConfig config;
+
+        int fixedActionIndex = 0;
+
+        Dictionary<EnemyStatusType, IEnemyStatus> statuses;
 
         public int GetTicket()
         {
@@ -34,7 +38,7 @@ namespace Game.General
             this.ticket = ticket;
             this.position = position;
             
-            statuses = new Dictionary<EnemyStatusType, EnemyStatus>();
+            statuses = new Dictionary<EnemyStatusType, IEnemyStatus>();
             
             enemyView = view;
             this.config = config;
@@ -108,7 +112,16 @@ namespace Game.General
 
         public void ChangeCurrentAction()
         {
-            currentAction = config.Actions[Random.Range(0, config.Actions.Count)];
+            if (fixedActionIndex < config.FixedActions.Count)
+            {
+                currentAction = config.FixedActions[fixedActionIndex];
+                fixedActionIndex++;
+            }
+            else
+            {
+                currentAction = config.Actions[Random.Range(0, config.Actions.Count)];    
+            }
+            
             enemyView.StartCoroutine(enemyView.ShowIntent(currentAction));
         }
 
@@ -124,7 +137,12 @@ namespace Game.General
 
         public IEnumerator TakeDamage(int damage)
         {
-            yield return SufferDamage(damage);
+            float modifier = 1;
+            foreach (var status in statuses.Values)
+            {
+                modifier *= status.DamageTakenModifier();
+            }
+            yield return SufferDamage(Mathf.FloorToInt(modifier * damage));
         }
 
         public IEnumerator ActivateStatusesOnUpkeep()
@@ -132,6 +150,7 @@ namespace Game.General
             foreach (var status in statuses.Values)
             {
                 yield return status.OnBeginTurn(this);
+                enemyView.UpdateStatusView(status);
             }
         }
 
@@ -143,26 +162,37 @@ namespace Game.General
             }
         }
 
-        public IEnumerator AddStatus(int actionMagnitude, EnemyStatusType status)
+        public List<IEnemyStatus> GetStatuses()
         {
-            switch (status)
-            {
-                case EnemyStatusType.POISON: 
-                    EnemyStatus poison;
-                    if (statuses.TryGetValue(EnemyStatusType.POISON, out poison))
-                    {
-                        yield return poison.IncreaseStatus(actionMagnitude);
-                    }
-                    else
-                    {
-                        var poisonStatus = new PoisonStatus(actionMagnitude);
-                        statuses.Add(EnemyStatusType.POISON, poisonStatus);
+            return statuses.Values.ToList();
+        }
 
-                        yield return null;
-                    }
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(status), status, null);
+        public IEnumerator AddStatus(int actionMagnitude, EnemyStatusType type)
+        {
+            IEnemyStatus status;
+            if (statuses.TryGetValue(type, out status))
+            {
+                yield return status.IncreaseStatus(actionMagnitude);
+                enemyView.UpdateStatusView(status);
+            }
+            else
+            {
+                switch (type)
+                {
+                    case EnemyStatusType.POISON:
+                        status = new PoisonStatus(actionMagnitude);
+                        break;
+                    case EnemyStatusType.VULNERABLE:
+                        status = new VulnerableStatus(actionMagnitude);
+                        break;
+                    case EnemyStatusType.WEAKENED:
+                        status = new WeakenedStatus(actionMagnitude);
+                        break;
+                }
+                statuses.Add(type, status);
+                enemyView.UpdateStatusView(status);
+                
+                yield return null;
             }
         }
     }

@@ -7,27 +7,61 @@ using UnityEngine.UI;
 
 public class QuestNode : MonoBehaviour
 {
-    public List<QuestNode> NextNodes;
-    public int Index;
     public bool Occupied;
+    public bool RestSite;
+    public bool IsBoss;
 
     public Image OccupiedImage;
+    public Image RestSiteImage;
+    public Image BossImage;
     public Button QuestButton;
+    
 
-    private void Start()
+    void Start()
     {
+        QuestButton.onClick.AddListener(OnQuestButtonPressed);
         if (Occupied)
         {
             OccupiedImage.enabled = true;
-            QuestButton.onClick.AddListener(OnQuestButtonPressed);
+        }
+        else if (RestSite)
+        {
+            RestSiteImage.enabled = true;
+        }
+
+        if (IsBoss)
+        {
+            BossImage.enabled = true;
         }
     }
 
-    private void OnQuestButtonPressed()
+    void OnQuestButtonPressed()
     {
-        EventSystem.Instance.Raise(new ChoseQuestNodeDdbEvent()
+        if (Occupied)
         {
-            Node = this
-        });
+            EventSystem.Instance.Raise(new ChoseQuestNodeDdbEvent()
+            {
+                Node = this
+            });    
+        } 
+        else if (RestSite)
+        {
+            EventSystem.Instance.Raise(new RestDdbEvent());
+        } 
+        else if (IsBoss)
+        {
+            EventSystem.Instance.Raise(new ChoseQuestNodeDdbEvent()
+            {
+                Node = this
+            });    
+        }
+         
+    }
+
+    public void SetInteractable(bool interactable)
+    {
+        QuestButton.enabled = interactable;
+        OccupiedImage.color = new Color(1, 1, 1, interactable ? 1 : 0.5f);
+        RestSiteImage.color = new Color(1, 1, 1, interactable ? 1 : 0.5f);
     }
 }

@@ -1,46 +1,66 @@
 ﻿using System.Collections;
 using Game.Event;
 using Game.General;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class QuestController : MonoBehaviour
 {
-    public GameObject QuestMap;
-    private bool questFinished = false;
-    private bool onQuest = false;
+    public QuestBuilder QuestMap;
+    bool questFinished = false;
+    bool onQuest = false;
+    bool onBoss = false;
+    bool rest = false;
 
-    private void Start()
+    void Start()
     {
         StartCoroutine(RunQuest());
         
         EventSystem.Instance.AddListener<ChoseQuestNodeDdbEvent>(OnChoseQuestNode);
         EventSystem.Instance.AddListener<SpoilsGottenDdbEvent>(OnRoomCleared);
+        EventSystem.Instance.AddListener<RestDdbEvent>(OnRest);
     }
 
-    private void OnDestroy()
+    void OnDestroy()
     {
         EventSystem.Instance.RemoveListener<ChoseQuestNodeDdbEvent>(OnChoseQuestNode);
         EventSystem.Instance.RemoveListener<SpoilsGottenDdbEvent>(OnRoomCleared);
+        EventSystem.Instance.RemoveListener<RestDdbEvent>(OnRest);
+    }
+    
+    void OnRest(RestDdbEvent e)
+    {
+        rest = true;
     }
 
-    private void OnRoomCleared(SpoilsGottenDdbEvent e)
+    void OnRoomCleared(SpoilsGottenDdbEvent e)
     {
         onQuest = false;
     }
 
-    private void OnChoseQuestNode(ChoseQuestNodeDdbEvent e)
+    void OnChoseQuestNode(ChoseQuestNodeDdbEvent e)
     {
         onQuest = true;
     }
 
-    private IEnumerator RunQuest()
+    IEnumerator RunQuest()
     {
+        CombatController.Level = 0;
+        
         while (!questFinished)
         {
-            yield return new WaitUntil(() => onQuest);
+            yield return new WaitUntil(() => onQuest || rest);
+
+            if (rest)
+            {
+                HeroStatus.Instance.Heal((int)(0.33f * HeroStatus.Instance.MaxHp));
+                QuestMap.CompleteCurrentRow();
+                rest = false;
+                continue;
+            }
             
-            QuestMap.SetActive(false);
+            QuestMap.gameObject.SetActive(false);
 
             SceneManager.LoadSceneAsync("CombatScene", LoadSceneMode.Additive);
             
@@ -48,7 +68,11 @@ public class QuestController : MonoBehaviour
 
             SceneManager.UnloadSceneAsync("CombatScene");
             
-            QuestMap.SetActive(true);
+            QuestMap.gameObject.SetActive(true);
+            
+            QuestMap.CompleteCurrentRow();
+
+            CombatController.Level++;
         }
     }
 }

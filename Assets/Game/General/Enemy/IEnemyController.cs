@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 
 namespace Game.General
 {
@@ -14,5 +15,7 @@ namespace Game.General
         IEnumerator ActivateStatusesOnUpkeep();
 
         IEnumerator ActivateStatusesOnEndPhase();
+
+        List<IEnemyStatus> GetStatuses();
     }
 }

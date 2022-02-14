@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: Slash
   m_EditorClassIdentifier: 
   Actions:
-  - {fileID: 11400000, guid: b227ebdfa299a4d54a221416814698f8, type: 2}
+  - {fileID: 11400000, guid: 67fabcacc71854e81a930e35d28204ef, type: 2}
+  Rarity: 0
   Title: Slash
-  Description: Deals 10 damage to <b>one</b> target enemy.
+  Description: Deals 15 damage to <b>one</b> target enemy.
   ManaCost: 1

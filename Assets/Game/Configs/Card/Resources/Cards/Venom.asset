@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: Venom
   m_EditorClassIdentifier: 
   Actions:
-  - {fileID: 11400000, guid: a51ccb35b3a8843a6a6b7c6fcf7c0f6d, type: 2}
+  - {fileID: 11400000, guid: f2d0da7ea3b544c108d79a5cccb8f7fe, type: 2}
+  Rarity: 0
   Title: Venom
-  Description: Causes 15 poison to one enemy
-  ManaCost: 2
+  Description: Causes 10 poison to one enemy
+  ManaCost: 1

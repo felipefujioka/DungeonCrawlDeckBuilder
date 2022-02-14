@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9724503a4e6f42188f9249642a079cfc, type: 3}
+  m_Name: Wyvern
+  m_EditorClassIdentifier: 
+  Name: Wyvern
+  Sprite: {fileID: 21300000, guid: 3bea3bd8be80b4047af090777c1a1ce0, type: 3}
+  MaxHP: 120
+  Actions:
+  - {fileID: 11400000, guid: b227ebdfa299a4d54a221416814698f8, type: 2}
+  - {fileID: 11400000, guid: bb0379cb299004652a4aebc33fc3d625, type: 2}
+  FixedActions:
+  - {fileID: 11400000, guid: b227ebdfa299a4d54a221416814698f8, type: 2}
+  - {fileID: 11400000, guid: b227ebdfa299a4d54a221416814698f8, type: 2}
+  - {fileID: 11400000, guid: 67fabcacc71854e81a930e35d28204ef, type: 2}
+  - {fileID: 11400000, guid: 709a4031ca7be400fb6e332c8e859ba2, type: 2}

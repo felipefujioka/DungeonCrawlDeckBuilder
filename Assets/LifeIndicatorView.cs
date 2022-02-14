@@ -17,21 +17,28 @@ namespace DefaultNamespace
         public TextMeshProUGUI IncreaseLifeLabel;
         public List<TextMeshProUGUI> DecreaseLifeLabels;
 
-        private int labelsCount;
-        private int labelIndex;
-        
-        private void Start()
+        int labelsCount;
+        int labelIndex;
+
+        void Start()
         {
             EventSystem.Instance.AddListener<OnLifeDataChanged>(OnLifeChanged);
             labelsCount = DecreaseLifeLabels.Count;
+            OnLifeChanged(new OnLifeDataChanged()
+            {
+                ChangedValue = 0, 
+                CurrentLife = HeroStatus.Instance.CurrentHp, 
+                Heal = true, 
+                MaxLife = HeroStatus.Instance.MaxHp
+            });
         }
 
-        private void OnDestroy()
+        void OnDestroy()
         {
             EventSystem.Instance.RemoveListener<OnLifeDataChanged>(OnLifeChanged);
         }
 
-        private void OnLifeChanged(OnLifeDataChanged e)
+        void OnLifeChanged(OnLifeDataChanged e)
         {
             labelIndex = labelIndex < labelsCount - 1 ? labelIndex + 1 : 0;  
             
@@ -39,7 +46,7 @@ namespace DefaultNamespace
 
         }
 
-        private IEnumerator Animate(OnLifeDataChanged e)
+        IEnumerator Animate(OnLifeDataChanged e)
         {
             MaxLifeLabel.text = e.MaxLife.ToString();
             
@@ -55,7 +62,7 @@ namespace DefaultNamespace
             }
         }
 
-        private IEnumerator AnimateChange(TextMeshProUGUI label, int eChangedValue)
+        IEnumerator AnimateChange(TextMeshProUGUI label, int eChangedValue)
         {
             var finished = false;
             label.gameObject.SetActive(true);

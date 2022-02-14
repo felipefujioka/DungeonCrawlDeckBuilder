@@ -12,5 +12,6 @@ namespace Game.General
 
         public int MaxHP;
         public List<ActionConfig> Actions;
+        public List<ActionConfig> FixedActions;
     }
 }

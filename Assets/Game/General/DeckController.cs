@@ -9,12 +9,11 @@ namespace Game.General
 {
     public class DeckController : IDisposable
     {
+        List<CardConfig> deck;
 
-        private List<CardConfig> deck;
+        List<CardConfig> discardPile;
 
-        private List<CardConfig> discardPile;
-
-        private List<CardConfig> hand;
+        List<CardConfig> hand;
         
         public DeckController(List<CardConfig> deckCards)
         {
@@ -27,13 +26,13 @@ namespace Game.General
             EventSystem.Instance.AddListener<UsedCardDdbEvent>(OnUseCardEvent);
         }
 
-        private void OnUseCardEvent(UsedCardDdbEvent e)
+        void OnUseCardEvent(UsedCardDdbEvent e)
         {
             RemoveCardFromHand(e.CardView.Config);
             DiscardCard(e.CardView.Config);
         }
 
-        private void ShuffleDeck()
+        void ShuffleDeck()
         {
             for (int i = 0; i < deck.Count; i++)
             {

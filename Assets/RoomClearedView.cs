@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Game.Event;
 using Game.General;
 using UnityEngine;
@@ -14,20 +15,42 @@ public class RoomClearedView : MonoBehaviour
     public SpoilView SpoilViewPrefab;
     public HorizontalLayoutGroup SpoilHolder;
 
-    private List<SpoilView> spoils;
-    
-    private CardConfig selectedCard;
-    
+    List<SpoilView> spoils;
+
+    CardConfig selectedCard;
+
+    static List<CardConfig> CommonCards;
+    static List<CardConfig> UncommonCards;
+    static List<CardConfig> RareCards;
+
     void Start()
     {
-        var cardList = Resources.LoadAll<CardConfig>("Cards");
+        if (CommonCards == null)
+        {
+            var cardList = Resources.LoadAll<CardConfig>("Cards");
+
+            CommonCards = cardList.Where(card => card.Rarity == CardConfig.RarityValue.COMMON).ToList();
+            UncommonCards = cardList.Where(card => card.Rarity == CardConfig.RarityValue.UNCOMMON).ToList();
+            RareCards = cardList.Where(card => card.Rarity == CardConfig.RarityValue.RARE).ToList();
+        }
 
         spoils = new List<SpoilView>();
-        
+        HashSet<CardConfig> cards = new HashSet<CardConfig>();
+
         for (int i = 0; i < 3; i++)
         {
             var spoil = Instantiate(SpoilViewPrefab, SpoilHolder.transform);
-            spoil.CardView.Init(cardList[Random.Range(0, cardList.Length)]);
+
+            var candidate = GetCard();
+
+            while (cards.Contains(candidate))
+            {
+                candidate = GetCard();
+            }
+
+            cards.Add(candidate);
+
+            spoil.CardView.Init(candidate);
 
             spoils.Add(spoil);
             
@@ -35,6 +58,23 @@ public class RoomClearedView : MonoBehaviour
             
             button.onClick.AddListener(OnSelectSpoil(spoil));
         }
+    }
+
+    CardConfig GetCard()
+    {
+        var random = Random.value;
+
+        if (random < 0.15f)
+        {
+            return RareCards[Random.Range(0, RareCards.Count)];
+        }
+        
+        if (random < 0.33f)
+        {
+            return UncommonCards[Random.Range(0, UncommonCards.Count)];
+        }
+
+        return CommonCards[Random.Range(0, CommonCards.Count)];
     }
 
     private UnityAction OnSelectSpoil(SpoilView spoil)

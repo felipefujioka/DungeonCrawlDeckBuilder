@@ -9,12 +9,12 @@ namespace Game.General
 {
     public class EncounterController : IDisposable
     {
-        private EncounterView view;
+        EncounterView view;
 
-        private int ticketCount = 0;
+        int ticketCount = 0;
 
-        private Dictionary<int, EnemyController> enemies;
-        private Dictionary<int, int> enemiesPositions;
+        Dictionary<int, EnemyController> enemies;
+        Dictionary<int, int> enemiesPositions;
 
         public EncounterController(EncounterView view, EncounterConfig config)
         {
@@ -54,7 +54,7 @@ namespace Game.General
             return list;
         }
 
-        private void OnEnemyDied(EnemyDiedDdbEvent e)
+        void OnEnemyDied(EnemyDiedDdbEvent e)
         {
             var controller = enemies[e.Ticket];
             
@@ -69,7 +69,7 @@ namespace Game.General
             }
         }
 
-        private EnemyController GetEnemy(int position)
+        EnemyController GetEnemy(int position)
         {
             var ticket = 0;
             if (enemiesPositions.ContainsKey(position))
@@ -81,25 +81,30 @@ namespace Game.General
                 return controller;
             }
 
-            if (position == 2)
+            if (enemiesPositions.ContainsKey(2))
             {
-                position = 1;
-            } 
-            else if (position == 1)
-            {
-                position = 0;
+                return GetEnemy(2);
             }
-            else if(position == 0)
+            
+            if (enemiesPositions.ContainsKey(1))
             {
-                position = 2;
+                return GetEnemy(1);
+            }
+            
+            if (enemiesPositions.ContainsKey(0))
+            {
+                return GetEnemy(0);
             }
 
-            return GetEnemy(position);
+            return null;
         }
         
         public IEnumerator HeroDealDamage(int damage, int position)
         {
-            yield return GetEnemy(position).SufferDamage(damage);
+            if (GetEnemy(position) != null)
+            {
+                yield return GetEnemy(position).TakeDamage(damage);    
+            }
         }
 
         public void Dispose()
@@ -109,7 +114,11 @@ namespace Game.General
 
         public IEnumerator CauseStatusOnEnemy(int actionMagnitude, EnemyStatusType status, int position)
         {
-            yield return GetEnemy(position).AddStatus(actionMagnitude, status);
+            var enemy = GetEnemy(position);
+            if (enemy != null)
+            {
+                yield return enemy.AddStatus(actionMagnitude, status);    
+            }
         }
     }
 }

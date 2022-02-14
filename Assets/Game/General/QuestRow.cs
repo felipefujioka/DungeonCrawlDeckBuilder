@@ -1,57 +1,49 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
 public class QuestRow : MonoBehaviour
 {
     public QuestNode QuestNodePrefab;
+    public Image CheckImage;
 
     public List<QuestNode> Row;
 
-    public List<int> Indexes = new List<int>() {0, 1, 2, 3, 4, 5, 6, 7, 8};
-
-    public List<QuestNode> OccupiedNodes;
-    private void Start()
+    bool HasRestSite;
+    public virtual void Start()
     {
-        OccupiedNodes = new List<QuestNode>();
         Row = new List<QuestNode>();
         
-        for (int i = 0; i < Indexes.Count ; i++)
+        for (int i = 0; i < 3 ; i++)
         {
-            var original = Indexes[i];
-            var targetIndex = Random.Range(0, Indexes.Count);
-            Indexes[i] = Indexes[targetIndex];
-            Indexes[targetIndex] = original;
-        }
-        
-        var questNodes = new List<QuestNode>();
-        
-        for (int i = 0; i < 3; i++)
-        {
-            var questNode = Instantiate(QuestNodePrefab, transform);
-            questNode.Occupied = true;
-            var index = Indexes[0];
-            Indexes.RemoveAt(0);
-            questNode.Index = index; 
-            OccupiedNodes.Add(questNode);
-            Row.Add(questNode);
-        }
+            var node = Instantiate(QuestNodePrefab, transform);
+            var randomRoll = Random.value;
 
-        for (int i = 0; i < 6; i++)
-        {
-            var questNode = Instantiate(QuestNodePrefab, transform);
-            questNode.Occupied = false;
-            var index = Indexes[0];
-            Indexes.RemoveAt(0);
-            questNode.Index = index; 
-            Row.Add(questNode);
+            if (randomRoll < 0.1f && !HasRestSite)
+            {
+                node.RestSite = true;
+                HasRestSite = true;
+            }
+            else
+            {
+                node.Occupied = true;
+            }
+            Row.Add(node);
         }
+    }
 
-        foreach (var item in Row)
+    public void SetInteractable(bool interactable)
+    {
+        foreach (QuestNode node in Row)
         {
-            item.transform.SetSiblingIndex(item.Index);    
+            node.SetInteractable(interactable);
         }
+    }
+
+    public void CompleteRow()
+    {
+        SetInteractable(false);
+        CheckImage.gameObject.SetActive(true);
     }
 }

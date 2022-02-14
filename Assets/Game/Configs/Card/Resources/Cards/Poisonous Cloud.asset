@@ -10,10 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 41cc74120a1746ada5d3342e1ecc39bc, type: 3}
-  m_Name: Block
+  m_Name: Poisonous Cloud
   m_EditorClassIdentifier: 
   Actions:
-  - {fileID: 11400000, guid: 1dd9aea7b4048417c90305d1b75e560d, type: 2}
-  Title: Barrier
-  Description: Raise 25 block
-  ManaCost: 0
+  - {fileID: 11400000, guid: 6cdcfd3dfd3834ee3ab837371b788b3f, type: 2}
+  - {fileID: 11400000, guid: fb1d37f6b0722470fa0b9c644bad4557, type: 2}
+  Rarity: 2
+  Title: Poisonous Cloud
+  Description: Apply 20 poison to ALL enemies
+  ManaCost: 2

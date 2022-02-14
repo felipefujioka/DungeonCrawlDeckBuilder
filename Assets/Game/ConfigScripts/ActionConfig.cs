@@ -11,7 +11,10 @@ namespace Game.General
         HEAL = 4,
         BUFF = 5,
         MANA = 6,
-        REPEAT = 7
+        REPEAT = 7,
+        VULNERABLE = 8,
+        WEAKENED = 9,
+        DRAW = 10
     }
 
     public enum BuffType
